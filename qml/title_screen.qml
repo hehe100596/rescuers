@@ -3,16 +3,35 @@
 //================================================================================
 
 /*
- * Filename:       theme.js
+ * Filename:       main.qml
  * Date:           21. 10. 2017
  * Subject:        IBP - Bachelor Thesis
- * Description:    Javascript file
+ * Description:    Main qml file
  * Author:         Juraj Bačovčin
  *                 (xbacov04@stud.fit.vutbr.cz)
  */
 
-.pragma library
+import QtQuick 2.1
+import QtQuick.Window 2.0
+import "../javascript/theme.js" as Theme
+
+Window
+{
+    visible: true
+
+    width: 1280
+    height: 720
+
+    title: "RESCUERS"
+
+    Image
+    {
+        width: parent.width
+        height: parent.height
+        source: "../img/background.jpg"
+    }
+}
 
 //--------------------------------------------------------------------------------
-// End of file theme.js
+// End of file main.qml
 //--------------------------------------------------------------------------------

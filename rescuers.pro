@@ -22,8 +22,6 @@ SOURCES += main.cpp
 
 RESOURCES += qml.qrc
 
-OTHER_FILES +=  qml/main.qml
-
 OTHER_FILES += javascript/theme.js
 
 include (deployment.pri)
@@ -31,3 +29,6 @@ include (deployment.pri)
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro
 #--------------------------------------------------------------------------------
+
+DISTFILES += \
+    qml/title_screen.qml
