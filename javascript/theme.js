@@ -13,6 +13,11 @@
 
 .pragma library
 
+var button = "Black";
+var border = "White";
+var text = "White";
+var clicked_button = "DarkRed";
+
 //--------------------------------------------------------------------------------
 // End of file theme.js
 //--------------------------------------------------------------------------------

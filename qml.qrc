@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/title_screen.qml</file>
+        <file>qml/TitleScreen.qml</file>
+        <file>qml/MenuButton.qml</file>
         <file>javascript/theme.js</file>
 		<file>img/background.jpg</file>
+		<file>img/icon.ico</file>
     </qresource>
 </RCC>

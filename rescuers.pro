@@ -12,23 +12,25 @@
 #
 #--------------------------------------------------------------------------------
 
+include (deployment.pri)
+
 TEMPLATE = app
 
 QT += qml quick
-
-HEADERS +=
 
 SOURCES += main.cpp
 
 RESOURCES += qml.qrc
 
-OTHER_FILES += javascript/theme.js
+OTHER_FILES += \
+    javascript/theme.js \
+    img/background.jpg \
+    img/icon.ico
 
-include (deployment.pri)
+DISTFILES += \
+    qml/TitleScreen.qml \
+    qml/MenuButton.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro
 #--------------------------------------------------------------------------------
-
-DISTFILES += \
-    qml/title_screen.qml

@@ -14,13 +14,15 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
+#include <QIcon>
 
 int main (int argc, char * argv [])
 {
     QGuiApplication app (argc, argv);
+    app.setWindowIcon (QIcon (":/img/icon.ico"));
 
     QQmlApplicationEngine engine;
-    engine.load (QUrl (QStringLiteral ("qrc:///qml/title_screen.qml")));
+    engine.load (QUrl (QStringLiteral ("qrc:///qml/TitleScreen.qml")));
 
     return app.exec ();
 }
