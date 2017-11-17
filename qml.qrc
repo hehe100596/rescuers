@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>qml/TitleScreen.qml</file>
         <file>qml/MenuButton.qml</file>
+        <file>qml/ErrorMessage.qml</file>
         <file>javascript/theme.js</file>
 		<file>img/background.jpg</file>
 		<file>img/icon.ico</file>

@@ -11,7 +11,7 @@
  *                 (xbacov04@stud.fit.vutbr.cz)
  */
 
-import QtQuick 2.0
+import QtQuick 2.1
 import "../javascript/theme.js" as Theme
 
 Rectangle
@@ -21,7 +21,7 @@ Rectangle
     property string operation
 
     border.color: Theme.border
-    border.width: (window.height + window.width) / 500
+    border.width: (window.height + window.width) / 600
     radius: (window.height + window.width) / 150
 
     pressed: false
@@ -53,6 +53,10 @@ Rectangle
         onReleased: button.pressed = false
         onClicked:
         {
+            if (operation == "Load Game") window.showErrorMessage ("Saving and loading is not implemented in this version.")
+
+            if (operation == "Instructions") Qt.openUrlExternally ("http://www.indieboardsandcards.com/fpfr.php")
+
             if (operation == "Exit Game") window.close ()
         }
     }

@@ -13,7 +13,6 @@
 
 import QtQuick 2.1
 import QtQuick.Window 2.0
-import "../javascript/theme.js" as Theme
 
 Window
 {
@@ -27,6 +26,13 @@ Window
     minimumHeight: 360
 
     title: "RESCUERS - Title Screen"
+
+    function showErrorMessage (errorMessage)
+    {
+        var component = Qt.createComponent ("ErrorMessage.qml")
+        var messagebox = component.createObject (window)
+        messagebox.message = errorMessage
+    }
 
     Image
     {
