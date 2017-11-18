@@ -17,6 +17,8 @@ var button = "Black";
 var border = "White";
 var text = "White";
 var clicked_button = "DarkRed";
+var combo_box = "Red";
+var combo_box_dropdown = "Salmon";
 
 //--------------------------------------------------------------------------------
 // End of file theme.js

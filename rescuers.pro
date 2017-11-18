@@ -30,7 +30,9 @@ OTHER_FILES += \
 DISTFILES += \
     qml/TitleScreen.qml \
     qml/MenuButton.qml \
-    qml/ErrorMessage.qml
+    qml/ErrorMessage.qml \
+    qml/SettingsScreen.qml \
+    qml/SettingsComboBox.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro

@@ -19,6 +19,16 @@ Window
     id: window
     visible: true
 
+    property string difficulty
+    property string players
+    property string building
+    property string timer
+
+    difficulty: "Easy"
+    players: "1"
+    building: "1st Edition"
+    timer: "OFF"
+
     width: 1280
     height: 720
 
@@ -32,6 +42,12 @@ Window
         var component = Qt.createComponent ("ErrorMessage.qml")
         var messagebox = component.createObject (window)
         messagebox.message = errorMessage
+    }
+
+    function showSettings ()
+    {
+        var component = Qt.createComponent ("SettingsScreen.qml")
+        var settings = component.createObject (window)
     }
 
     Image
@@ -55,18 +71,22 @@ Window
         {
             operation: "New Game"
         }
+
         MenuButton
         {
             operation: "Load Game"
         }
+
         MenuButton
         {
             operation: "Settings"
         }
+
         MenuButton
         {
             operation: "Instructions"
         }
+
         MenuButton
         {
             operation: "Exit Game"

@@ -17,6 +17,7 @@ import "../javascript/theme.js" as Theme
 Rectangle
 {
     id: button
+
     property bool pressed
     property string operation
 
@@ -51,13 +52,22 @@ Rectangle
 
         onPressed: button.pressed = true
         onReleased: button.pressed = false
+
         onClicked:
         {
+            if (operation == "New Game") window.showErrorMessage ("Game is currently unplayable in this version.")
+
             if (operation == "Load Game") window.showErrorMessage ("Saving and loading is not implemented in this version.")
+
+            if (operation == "Settings") showSettings ()
 
             if (operation == "Instructions") Qt.openUrlExternally ("http://www.indieboardsandcards.com/fpfr.php")
 
             if (operation == "Exit Game") window.close ()
+
+            if (operation == "Cancel") settings.destroy ()
+
+            if (operation == "Confirm") applySettings ()
         }
     }
 }
