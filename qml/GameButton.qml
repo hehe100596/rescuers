@@ -3,10 +3,10 @@
 //================================================================================
 
 /*
- * Filename:       MenuButton.qml
- * Date:           13. 11. 2017
+ * Filename:       GameButton.qml
+ * Date:           19. 11. 2017
  * Subject:        IBP - Bachelor Thesis
- * Description:    QML file for menu button
+ * Description:    QML file for game button
  * Author:         Juraj Bačovčin
  *                 (xbacov04@stud.fit.vutbr.cz)
  */
@@ -16,20 +16,22 @@ import "../javascript/theme.js" as Theme
 
 Rectangle
 {
-    id: button
+    id: game_button
 
     property bool pressed
     property string operation
+    property string button_text
 
     border.color: Theme.border
-    border.width: (window.height + window.width) / 600
-    radius: (window.height + window.width) / 150
+    border.width: (game.height + game.width) / 600
+    radius: (game.height + game.width) / 150
 
     pressed: false
     operation: "Inactive"
+    button_text: operation
 
-    width: window.width / 5
-    height: window.height / 10
+    width: game.width / 6
+    height: game.height / 10
     color: pressed ? Theme.clicked_button : Theme.button
 
     Text
@@ -37,41 +39,33 @@ Rectangle
         anchors.fill: parent
 
         font.bold: true
-        font.pointSize: (window.height + window.width) / 120
+        font.pointSize: (game.height + game.width) / 140
         color: Theme.text
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        text: operation
+        text: button_text
     }
 
     MouseArea
     {
         anchors.fill: parent
 
-        onPressed: button.pressed = true
-        onReleased: button.pressed = false
+        onPressed: game_button.pressed = true
+        onReleased: game_button.pressed = false
 
         onClicked:
         {
-            if (operation == "New Game") setupGameWindow ()
+            if (operation == "Pause Game") pauseGame ()
 
-            if (operation == "Load Game") showErrorMessage ("Saving and loading is not implemented in this version.")
+            if (operation == "Save Game") showErrorMessage ("Saving and loading is not implemented in this version.")
 
-            if (operation == "Settings") showSettings ()
-
-            if (operation == "Instructions") Qt.openUrlExternally ("http://www.indieboardsandcards.com/fpfr.php")
-
-            if (operation == "Exit Game") window.close ()
-
-            if (operation == "Cancel") settings.destroy ()
-
-            if (operation == "Confirm") applySettings ()
+            if (operation == "Exit Game") game.close ()
         }
     }
 }
 
 //--------------------------------------------------------------------------------
-// End of file MenuButton.qml
+// End of file GameButton.qml
 //--------------------------------------------------------------------------------

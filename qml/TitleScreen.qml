@@ -50,6 +50,17 @@ Window
         var settings = component.createObject (window)
     }
 
+    function setupGameWindow ()
+    {
+        pageLoader.source = "GameScreen.qml"
+        window.hide ()
+    }
+
+    Loader
+    {
+        id: pageLoader
+    }
+
     Image
     {
         width: parent.width

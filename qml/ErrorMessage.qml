@@ -18,6 +18,7 @@ import "../javascript/theme.js" as Theme
 Window
 {
     id: messageBox
+
     visible: true
     modality: Qt.ApplicationModal
 

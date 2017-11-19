@@ -25,6 +25,8 @@ RESOURCES += qml.qrc
 OTHER_FILES += \
     javascript/theme.js \
     img/background.jpg \
+    img/1st_edition_gameboard.jpg \
+    img/2nd_edition_gameboard.jpg \
     img/icon.ico
 
 DISTFILES += \
@@ -32,7 +34,9 @@ DISTFILES += \
     qml/MenuButton.qml \
     qml/ErrorMessage.qml \
     qml/SettingsScreen.qml \
-    qml/SettingsComboBox.qml
+    qml/SettingsComboBox.qml \
+    qml/GameScreen.qml \
+    qml/GameButton.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro
