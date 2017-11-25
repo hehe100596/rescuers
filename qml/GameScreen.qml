@@ -42,6 +42,15 @@ Window
 
     title: "RESCUERS - Game Screen"
 
+    function executeGameButton (operation)
+    {
+        if (operation === "Pause Game") pauseGame ()
+
+        if (operation === "Save Game") showErrorMessage ("Saving and loading is not implemented in this version.")
+
+        if (operation === "Exit Game") game.close ()
+    }
+
     function actualizeTimer (actual_time, seconds)
     {
         actual_time.setSeconds (actual_time.getSeconds () + seconds)

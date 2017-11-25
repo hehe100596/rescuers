@@ -107,12 +107,32 @@ Rectangle
 
         MenuButton
         {
+            id: cancel
             operation: "Cancel"
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                onPressed: cancel.pressed = true
+                onReleased: cancel.pressed = false
+                onClicked: settings.destroy ()
+            }
         }
 
         MenuButton
         {
+            id: confirm
             operation: "Confirm"
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                onPressed: confirm.pressed = true
+                onReleased: confirm.pressed = false
+                onClicked: applySettings ()
+            }
         }
     }
 }

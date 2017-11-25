@@ -54,15 +54,7 @@ Rectangle
 
         onPressed: game_button.pressed = true
         onReleased: game_button.pressed = false
-
-        onClicked:
-        {
-            if (operation == "Pause Game") pauseGame ()
-
-            if (operation == "Save Game") showErrorMessage ("Saving and loading is not implemented in this version.")
-
-            if (operation == "Exit Game") game.close ()
-        }
+        onClicked: executeGameButton (operation)
     }
 }
 

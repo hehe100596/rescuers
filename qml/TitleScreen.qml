@@ -37,6 +37,19 @@ Window
 
     title: "RESCUERS - Title Screen"
 
+    function executeMenuButton (operation)
+    {
+        if (operation === "New Game") setupGameWindow ()
+
+        if (operation === "Load Game") showErrorMessage ("Saving and loading is not implemented in this version.")
+
+        if (operation === "Settings") showSettings ()
+
+        if (operation === "Instructions") Qt.openUrlExternally ("http://www.indieboardsandcards.com/fpfr.php")
+
+        if (operation === "Exit Game") window.close ()
+    }
+
     function showErrorMessage (errorMessage)
     {
         var component = Qt.createComponent ("ErrorMessage.qml")
