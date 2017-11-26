@@ -53,7 +53,7 @@ Window
 
     function actualizeTimer (actual_time, seconds)
     {
-        actual_time.setSeconds (actual_time.getSeconds () + seconds)
+        if (actual_time.getHours () < 24) actual_time.setSeconds (actual_time.getSeconds () + seconds)
         return actual_time
     }
 
@@ -71,17 +71,33 @@ Window
         }
     }
 
+    Component.onCompleted:
+    {
+        setX (Screen.width / 2 - width / 2)
+        setY (Screen.height / 2 - height / 2)
+    }
+
     Image
     {
         width: parent.width / 1.3
         height: parent.height
         source: game.building === 0 ? "../img/1st_edition_gameboard.jpg" : "../img/2nd_edition_gameboard.jpg"
-    }
 
-    Component.onCompleted:
-    {
-        setX (Screen.width / 2 - width / 2)
-        setY (Screen.height / 2 - height / 2)
+        Rectangle
+        {
+            id: gameboard
+
+            width: parent.width - parent.width / 9.8
+            height: parent.height
+
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width / 9.8
+
+            color: "transparent"
+
+            // TODO: fill game board with game squares
+            GameSquare { state: "smoke" }
+        }
     }
 
     Timer
@@ -96,7 +112,7 @@ Window
     Row
     {
         anchors.right: parent.right
-        anchors.rightMargin: parent.width / 30
+        anchors.rightMargin: parent.width / 17
 
         anchors.top: parent.top
         anchors.topMargin: parent.height / 20
@@ -124,7 +140,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Number of players - " + window.players
+                text: "Players - " + window.players
             }
 
             Text

@@ -27,6 +27,11 @@ OTHER_FILES += \
     img/background.jpg \
     img/1st_edition_gameboard.jpg \
     img/2nd_edition_gameboard.jpg \
+    img/gamesquare_fakealert.jpg \
+    img/gamesquare_fire.jpg \
+    img/gamesquare_questionmark.jpg \
+    img/gamesquare_realalert.jpg \
+    img/gamesquare_smoke.jpg \
     img/icon.ico
 
 DISTFILES += \
@@ -36,7 +41,8 @@ DISTFILES += \
     qml/SettingsScreen.qml \
     qml/SettingsComboBox.qml \
     qml/GameScreen.qml \
-    qml/GameButton.qml
+    qml/GameButton.qml \
+    qml/GameSquare.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro

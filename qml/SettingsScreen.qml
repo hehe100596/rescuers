@@ -11,7 +11,7 @@
  *                 (xbacov04@stud.fit.vutbr.cz)
  */
 
-import QtQuick 2.0
+import QtQuick 2.1
 import "../javascript/theme.js" as Theme
 
 Rectangle

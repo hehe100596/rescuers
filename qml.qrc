@@ -7,10 +7,16 @@
         <file>qml/SettingsComboBox.qml</file>
         <file>qml/GameScreen.qml</file>
         <file>qml/GameButton.qml</file>
+        <file>qml/GameSquare.qml</file>
         <file>javascript/theme.js</file>
 		<file>img/background.jpg</file>
 		<file>img/1st_edition_gameboard.jpg</file>
 		<file>img/2nd_edition_gameboard.jpg</file>
+		<file>img/gamesquare_fakealert.jpg</file>
+		<file>img/gamesquare_fire.jpg</file>
+		<file>img/gamesquare_questionmark.jpg</file>
+		<file>img/gamesquare_realalert.jpg</file>
+		<file>img/gamesquare_smoke.jpg</file>
 		<file>img/icon.ico</file>
     </qresource>
 </RCC>
