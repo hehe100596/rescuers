@@ -18,9 +18,18 @@ Rectangle
     id: gamesquare
 
     property string state
+    property bool alert
+    property int row
+    property int column
 
     width: gameboard.width / 10
     height: gameboard.height / 8
+
+    x: column * width;
+    y: row * height
+
+    row: 0
+    column: 0
 
     color: "transparent"
     state: "nothing"
@@ -42,8 +51,8 @@ Rectangle
 
     Image
     {
-        width: parent.width / 1.5
-        height: parent.height / 1.5
+        width: parent.width / 2
+        height: parent.height / 2
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter

@@ -14,6 +14,7 @@
 import QtQuick 2.1
 import QtQuick.Window 2.0
 import "../javascript/theme.js" as Theme
+import "../javascript/gameboard.js" as GameBoard
 
 Window
 {
@@ -34,7 +35,7 @@ Window
     minimumWidth: 640
     minimumHeight: 360
 
-    difficulty: window.difficulty === "Easy" ? 0 : window.difficulty === "Medium" ? 1 : 2
+    difficulty: window.difficulty === "Easy" ? 1 : window.difficulty === "Medium" ? 2 : 3
     players: parseInt (window.players)
     building: window.building === "1st Edition" ? 0 : 1
     timer: window.timer === "OFF" ? false : true
@@ -95,8 +96,14 @@ Window
 
             color: "transparent"
 
-            // TODO: fill game board with game squares
-            GameSquare { state: "smoke" }
+            Component.onCompleted: GameBoard.startGame ()    
+
+            MouseArea // TODO: delete after testing is done
+            {
+                anchors.fill: parent
+
+                onClicked: GameBoard.addSmoke ()
+            }
         }
     }
 

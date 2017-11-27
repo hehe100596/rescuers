@@ -6,7 +6,7 @@
  * Filename:       theme.js
  * Date:           21. 10. 2017
  * Subject:        IBP - Bachelor Thesis
- * Description:    Javascript file
+ * Description:    Javascript file for theme
  * Author:         Juraj Bačovčin
  *                 (xbacov04@stud.fit.vutbr.cz)
  */

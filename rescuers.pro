@@ -24,6 +24,7 @@ RESOURCES += qml.qrc
 
 OTHER_FILES += \
     javascript/theme.js \
+    javascript/gameboard.js \
     img/background.jpg \
     img/1st_edition_gameboard.jpg \
     img/2nd_edition_gameboard.jpg \

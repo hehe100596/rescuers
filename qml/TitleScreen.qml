@@ -24,7 +24,7 @@ Window
     property string building
     property string timer
 
-    difficulty: "Easy"
+    difficulty: "Medium"
     players: "1"
     building: "1st Edition"
     timer: "OFF"

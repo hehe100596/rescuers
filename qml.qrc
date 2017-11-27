@@ -9,6 +9,7 @@
         <file>qml/GameButton.qml</file>
         <file>qml/GameSquare.qml</file>
         <file>javascript/theme.js</file>
+        <file>javascript/gameboard.js</file>
 		<file>img/background.jpg</file>
 		<file>img/1st_edition_gameboard.jpg</file>
 		<file>img/2nd_edition_gameboard.jpg</file>
