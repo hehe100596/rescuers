@@ -27,6 +27,10 @@ Window
     property int players
     property int building
     property bool timer
+
+    property int dead
+    property int saved
+    property int damaged
     property var clock
 
     width: window.width
@@ -39,9 +43,19 @@ Window
     players: parseInt (window.players)
     building: window.building === "1st Edition" ? 0 : 1
     timer: window.timer === "OFF" ? false : true
+
+    dead: 0
+    saved: 0
+    damaged: 0
     clock: new Date (0, 0, 0, 0, 0, 0)
 
     title: "RESCUERS - Game Screen"
+
+    onVisibleChanged:
+    {
+        window.show ()
+        pageLoader.source = ""
+    }
 
     function executeGameButton (operation)
     {
@@ -72,10 +86,18 @@ Window
         }
     }
 
+    function gameOver ()
+    {
+        timer.stop ()
+        showErrorMessage ("Game over. You lose.")
+        gameboard.enabled = false
+    }
+
     Component.onCompleted:
     {
         setX (Screen.width / 2 - width / 2)
         setY (Screen.height / 2 - height / 2)
+        window.show ()
     }
 
     Image
@@ -102,7 +124,11 @@ Window
             {
                 anchors.fill: parent
 
-                onClicked: GameBoard.addSmoke ()
+                onClicked:
+                {
+                    GameBoard.addSmoke ()
+                    GameBoard.checkAfterEffects ()
+                }
             }
         }
     }
@@ -147,7 +173,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Players - " + window.players
+                text: "Players - " + game.players
             }
 
             Text
@@ -158,7 +184,29 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Difficulty - " + window.difficulty
+                text: "Dead - " + game.dead + "/4"
+            }
+
+            Text
+            {
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 140
+                color: Theme.button
+
+                text: "Saved - " + game.saved + "/7"
+            }
+
+            Text
+            {
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 140
+                color: Theme.button
+
+                text: "Damaged - " + game.damaged + "/24"
             }
         }
     }

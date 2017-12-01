@@ -21,6 +21,7 @@ Window
 
     visible: true
     modality: Qt.ApplicationModal
+    flags: Qt.Dialog
 
     property string message
 

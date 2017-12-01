@@ -47,7 +47,7 @@ Window
 
         if (operation === "Instructions") Qt.openUrlExternally ("http://www.indieboardsandcards.com/fpfr.php")
 
-        if (operation === "Exit Game") window.close ()
+        if (operation === "Exit Game") Qt.quit ()
     }
 
     function showErrorMessage (errorMessage)
