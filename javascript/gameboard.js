@@ -38,6 +38,8 @@ function startGame ()
         }
     }
 
+    createWalls ();
+
     for (var alerts = 0; alerts < 3; alerts++)
     {
         addAlert ()
@@ -77,7 +79,192 @@ function createSquare (column, row)
     return true;
 }
 
-function createFire (fireX, fireY) // TODO: add reactions to walls and doors
+function createWalls () // TODO: dynamically creating walls based on background picture
+{
+    if (game.building == 0)
+    {
+        board [11].leftWall = "full";
+        board [21].leftWall = "full";
+        board [31].leftWall = "closed";
+        board [41].leftWall = "full";
+        board [51].leftWall = "full";
+        board [61].leftWall = "full";
+
+        board [33].leftWall = "closed";
+        board [43].leftWall = "full";
+
+        board [14].leftWall = "closed";
+        board [24].leftWall = "full";
+
+        board [16].leftWall = "full";
+        board [26].leftWall = "closed";
+        board [56].leftWall = "full";
+        board [66].leftWall = "closed";
+
+        board [37].leftWall = "full";
+        board [47].leftWall = "closed";
+
+        board [58].leftWall = "full";
+        board [68].leftWall = "closed";
+
+        board [19].leftWall = "full";
+        board [29].leftWall = "full";
+        board [39].leftWall = "full";
+        board [49].leftWall = "closed";
+        board [59].leftWall = "full";
+        board [69].leftWall = "full";
+
+        board [11].topWall = "full";
+        board [12].topWall = "full";
+        board [13].topWall = "full";
+        board [14].topWall = "full";
+        board [15].topWall = "full";
+        board [16].topWall = "closed";
+        board [17].topWall = "full";
+        board [18].topWall = "full";
+
+        board [33].topWall = "full";
+        board [34].topWall = "full";
+        board [35].topWall = "full";
+        board [36].topWall = "full";
+        board [37].topWall = "full";
+        board [38].topWall = "closed";
+
+        board [51].topWall = "full";
+        board [52].topWall = "full";
+        board [53].topWall = "full";
+        board [54].topWall = "closed";
+        board [55].topWall = "full";
+        board [56].topWall = "full";
+        board [57].topWall = "full";
+        board [58].topWall = "full";
+
+        board [71].topWall = "full";
+        board [72].topWall = "full";
+        board [73].topWall = "closed";
+        board [74].topWall = "full";
+        board [75].topWall = "full";
+        board [76].topWall = "full";
+        board [77].topWall = "full";
+        board [78].topWall = "full";
+    }
+
+    else if (game.building == 1)
+    {
+        board [11].leftWall = "full";
+        board [21].leftWall = "full";
+        board [31].leftWall = "closed";
+        board [41].leftWall = "full";
+        board [51].leftWall = "full";
+        board [61].leftWall = "full";
+
+        board [14].leftWall = "full";
+        board [24].leftWall = "full";
+        board [34].leftWall = "full";
+        board [54].leftWall = "full";
+        board [64].leftWall = "full";
+
+        board [16].leftWall = "closed";
+        board [26].leftWall = "full";
+        board [36].leftWall = "closed";
+
+        board [47].leftWall = "closed";
+        board [57].leftWall = "full";
+        board [67].leftWall = "full";
+
+        board [19].leftWall = "full";
+        board [29].leftWall = "full";
+        board [39].leftWall = "full";
+        board [49].leftWall = "full";
+        board [59].leftWall = "full";
+        board [69].leftWall = "full";
+
+        board [11].topWall = "full";
+        board [12].topWall = "full";
+        board [13].topWall = "full";
+        board [14].topWall = "full";
+        board [15].topWall = "full";
+        board [16].topWall = "full";
+        board [17].topWall = "full";
+        board [18].topWall = "full";
+
+        board [24].topWall = "full";
+        board [25].topWall = "full";
+
+        board [31].topWall = "full";
+        board [32].topWall = "full";
+
+        board [44].topWall = "full";
+        board [45].topWall = "closed";
+        board [46].topWall = "closed";
+        board [47].topWall = "full";
+        board [48].topWall = "full";
+
+        board [51].topWall = "full";
+        board [52].topWall = "full";
+        board [53].topWall = "closed";
+        board [54].topWall = "full";
+        board [55].topWall = "full";
+        board [56].topWall = "closed";
+
+        board [71].topWall = "full";
+        board [72].topWall = "full";
+        board [73].topWall = "closed";
+        board [74].topWall = "full";
+        board [75].topWall = "full";
+        board [76].topWall = "full";
+        board [77].topWall = "full";
+        board [78].topWall = "full";
+    }
+
+    else return false
+}
+
+function isNeighbor (x, y, wallX, wallY, isLeft, wantedState) // TODO: define function and add reactions to walls and doors
+{
+    var wall = index (wallX, wallY);
+
+    if (board [index (x, y)].state === wantedState)
+    {
+        if (isLeft && board [wall].leftWall != "full" && board [wall].leftWall != "closed" && board [wall].leftWall != "damaged") return true;
+        if (! isLeft && board [wall].topWall != "full" && board [wall].topWall != "closed" && board [wall].topWall != "damaged") return true;
+    }
+
+    return false;
+}
+
+function damageWall (wallX, wallY, isLeft)
+{
+    var wall = index (wallX, wallY);
+
+    if (isLeft)
+    {
+        if (board [wall].leftWall === "full") board [wall].leftWall = "damaged";
+
+        else if (board [wall].leftWall === "damaged" || board [wall].leftWall === "closed")
+        {
+            board [wall].leftWall = "destroyed";
+            game.damaged++;
+        }
+
+        else showErrorMessage ("Unidentified behavior.");
+    }
+
+    else
+    {
+        if (board [wall].topWall === "full") board [wall].topWall = "damaged";
+
+        else if (board [wall].topWall === "damaged" || board [wall].topWall === "closed")
+        {
+            board [wall].topWall = "destroyed";
+            game.damaged++;
+        }
+
+        else showErrorMessage ("Unidentified damaging behavior.");
+    }
+}
+
+function createFire (fireX, fireY)
 {
     var fire = index (fireX, fireY);
 
@@ -95,13 +282,23 @@ function createExplosion (fireX, fireY)
     {
         if (fireX > counter)
         {
+            var leftWall = board [index (fireX - counter, fireY)].leftWall;
+
+            if (leftWall === "full" || leftWall === "closed" || leftWall === "damaged")
+            {
+                damageWall (fireX - counter, fireY, true);
+                break;
+            }
+
             if (board [index (fireX - (counter + 1), fireY)].state != "fire")
             {
                 createFire (fireX - (counter + 1), fireY);
                 break;
             }
+
             counter++;
         }
+
         else break;
     }
 
@@ -110,13 +307,23 @@ function createExplosion (fireX, fireY)
     {
         if (fireX < (maxColumn - (1 + counter)))
         {
+            var rightWall = board [index (fireX + (counter + 1), fireY)].leftWall;
+
+            if (rightWall === "full" || rightWall === "closed" || rightWall === "damaged")
+            {
+                damageWall (fireX + (counter + 1), fireY, true);
+                break;
+            }
+
             if (board [index (fireX + (counter + 1), fireY)].state != "fire")
             {
                 createFire (fireX + (counter + 1), fireY);
                 break;
             }
+
             counter++;
         }
+
         else break;
     }
 
@@ -125,13 +332,23 @@ function createExplosion (fireX, fireY)
     {
         if (fireY > counter)
         {
+            var topWall = board [index (fireX, fireY - counter)].topWall;
+
+            if (topWall === "full" || topWall === "closed" || topWall === "damaged")
+            {
+                damageWall (fireX, fireY - counter, false);
+                break;
+            }
+
             if (board [index (fireX, fireY - (counter + 1))].state != "fire")
             {
                 createFire (fireX, fireY - (counter + 1));
                 break;
             }
+
             counter++;
         }
+
         else break;
     }
 
@@ -140,13 +357,23 @@ function createExplosion (fireX, fireY)
     {
         if (fireY < (maxRow - (1 + counter)))
         {
+            var bottomWall = board [index (fireX, fireY + (counter + 1))].topWall;
+
+            if (bottomWall === "full" || bottomWall === "closed" || bottomWall === "damaged")
+            {
+                damageWall (fireX, fireY + (counter + 1), false);
+                break;
+            }
+
             if (board [index (fireX, fireY + (counter + 1))].state != "fire")
             {
                 createFire (fireX, fireY + (counter + 1));
                 break;
             }
+
             counter++;
         }
+
         else break;
     }
 }
@@ -155,26 +382,26 @@ function checkSmokeAround (smokeX, smokeY)
 {
     board [index (smokeX, smokeY)].state = "smoke";
 
-    if ((smokeX > 0 && board [index (smokeX - 1, smokeY)].state === "smoke") ||
-        (smokeX < (maxColumn - 1) && board [index (smokeX + 1, smokeY)].state === "smoke") ||
-        (smokeY > 0 && board [index (smokeX, smokeY - 1)].state === "smoke") ||
-        (smokeY < (maxRow - 1) && board [index (smokeX, smokeY + 1)].state === "smoke"))
+    if ((smokeX > 0 && isNeighbor (smokeX - 1, smokeY, smokeX, smokeY, true, "fire")) ||
+        (smokeX < (maxColumn - 1) && isNeighbor (smokeX + 1, smokeY, smokeX + 1, smokeY, true, "fire")) ||
+        (smokeY > 0 && isNeighbor (smokeX, smokeY - 1, smokeX, smokeY, false, "fire")) ||
+        (smokeY < (maxRow - 1) && isNeighbor (smokeX, smokeY + 1, smokeX, smokeY + 1, false, "fire")))
         board [index (smokeX, smokeY)].state = "fire";
 }
 
 function checkFireAround (fireX, fireY)
 {
-    if ((fireX > 0 && board [index (fireX - 1, fireY)].state === "fire") ||
-        (fireX < (maxColumn - 1) && board [index (fireX + 1, fireY)].state === "fire") ||
-        (fireY > 0 && board [index (fireX, fireY - 1)].state === "fire") ||
-        (fireY < (maxRow - 1) && board [index (fireX, fireY + 1)].state === "fire"))
+    if ((fireX > 0 && isNeighbor (fireX - 1, fireY, fireX, fireY, true, "fire")) ||
+        (fireX < (maxColumn - 1) && isNeighbor (fireX + 1, fireY, fireX + 1, fireY, true, "fire")) ||
+        (fireY > 0 && isNeighbor (fireX, fireY - 1, fireX, fireY, false, "fire")) ||
+        (fireY < (maxRow - 1) && isNeighbor (fireX, fireY + 1, fireX, fireY + 1, false, "fire")))
     {
         board [index (fireX, fireY)].state = "fire";
         checkAfterEffects ();
     }
 }
 
-function checkAfterEffects () // TODO: add damages and reactions to alerts and players
+function checkAfterEffects () // TODO: add reactions to players
 {
     for (var column = 0; column < maxColumn; column++)
     {
@@ -190,10 +417,10 @@ function checkAfterEffects () // TODO: add damages and reactions to alerts and p
         }
     }
 
-    if (game.dead >= 4) game.gameOver ();
+    if (game.dead >= 4 || game.damaged >= 24) game.gameOver ();
 }
 
-function addSmoke () // TODO: add walls and doors
+function addSmoke ()
 {
     var smokeX = Math.floor ((Math.random () * (maxColumn - 2)) + 1);
     var smokeY = Math.floor ((Math.random () * (maxRow - 2)) + 1);
@@ -207,7 +434,7 @@ function addSmoke () // TODO: add walls and doors
 
     else if (board [smoke].state === "questionMark") addSmoke (); // TODO: find out about reaction to alerts
 
-    else showErrorMessage ("Unidentified behavior."); // TODO: add reaction to players
+    else showErrorMessage ("Unidentified smoking behavior."); // TODO: add reaction to players
 }
 
 function addFire () // USE THIS IN THE BEGINNING ONLY

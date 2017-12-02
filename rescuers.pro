@@ -33,6 +33,10 @@ OTHER_FILES += \
     img/gamesquare_questionmark.jpg \
     img/gamesquare_realalert.jpg \
     img/gamesquare_smoke.jpg \
+    img/gamewall_damaged.jpg \
+    img/gamewall_destroyed.jpg \
+    img/gamewall_opened.jpg \
+    img/gamewall_closed.jpg \
     img/icon.ico
 
 DISTFILES += \
@@ -43,7 +47,8 @@ DISTFILES += \
     qml/SettingsComboBox.qml \
     qml/GameScreen.qml \
     qml/GameButton.qml \
-    qml/GameSquare.qml
+    qml/GameSquare.qml \
+    qml/GameWall.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro

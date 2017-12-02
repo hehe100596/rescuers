@@ -19,17 +19,24 @@ Rectangle
 
     property string state
     property bool alert
+
     property int row
     property int column
+
+    property string leftWall
+    property string topWall
 
     width: gameboard.width / 10
     height: gameboard.height / 8
 
-    x: column * width;
+    x: column * width
     y: row * height
 
     row: 0
     column: 0
+
+    leftWall: "none"
+    topWall: "none"
 
     color: "transparent"
     state: "nothing"
@@ -58,6 +65,22 @@ Rectangle
         anchors.verticalCenter: parent.verticalCenter
 
         source: actualizeState (gamesquare.state)
+    }
+
+    GameWall
+    {
+        width: 3
+        height: gamesquare.height
+
+        state: leftWall
+    }
+
+    GameWall
+    {
+        width: gamesquare.width
+        height: 3
+
+        state: topWall
     }
 }
 

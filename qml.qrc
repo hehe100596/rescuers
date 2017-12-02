@@ -8,6 +8,7 @@
         <file>qml/GameScreen.qml</file>
         <file>qml/GameButton.qml</file>
         <file>qml/GameSquare.qml</file>
+		<file>qml/GameWall.qml</file>
         <file>javascript/theme.js</file>
         <file>javascript/gameboard.js</file>
 		<file>img/background.jpg</file>
@@ -18,6 +19,10 @@
 		<file>img/gamesquare_questionmark.jpg</file>
 		<file>img/gamesquare_realalert.jpg</file>
 		<file>img/gamesquare_smoke.jpg</file>
+		<file>img/gamewall_damaged.jpg</file>
+		<file>img/gamewall_destroyed.jpg</file>
+		<file>img/gamewall_opened.jpg</file>
+		<file>img/gamewall_closed.jpg</file>
 		<file>img/icon.ico</file>
     </qresource>
 </RCC>
