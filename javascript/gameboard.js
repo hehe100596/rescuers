@@ -13,8 +13,11 @@
 
 var maxColumn = 10;
 var maxRow = 8;
+var maxPlayers = 6;
 var maxIndex = maxRow * maxColumn;
+var addedActionPoints = 4;
 var board = new Array (maxIndex);
+var players = new Array (maxPlayers);
 var component;
 
 function index (column, row)
@@ -29,6 +32,11 @@ function startGame ()
         if (board [i] != null) board [i].destroy ();
     }
 
+    for (var j = 0; j < maxPlayers; j++)
+    {
+        if (board [j] != null) board [j].destroy ();
+    }
+
     for (var column = 0; column < maxColumn; column++)
     {
         for (var row = 0; row < maxRow; row++)
@@ -40,6 +48,12 @@ function startGame ()
 
     createWalls ();
 
+    for (var counter = 0; counter < game.players; counter++)
+    {
+        players [counter] = null;
+        createPlayer (counter);
+    }
+
     for (var alerts = 0; alerts < 3; alerts++)
     {
         addAlert ()
@@ -49,6 +63,8 @@ function startGame ()
     {
         addFire ();
     }
+
+    firstMove ();
 }
 
 function createSquare (column, row)
@@ -70,9 +86,36 @@ function createSquare (column, row)
 
         board [index (column, row)] = dynamicObject;
     }
+
     else
     {
         showErrorMessage ("Error loading square component.")
+        return false;
+    }
+
+    return true;
+}
+
+function createPlayer (counter)
+{
+    component = Qt.createComponent ("../qml/Player.qml");
+
+    if (component.status == Component.Ready)
+    {
+        var dynamicObject = component.createObject (gameboard);
+
+        if (dynamicObject == null)
+        {
+            showErrorMessage ("Error creating player.")
+            return false;
+        }
+
+        players [counter] = dynamicObject;
+    }
+
+    else
+    {
+        showErrorMessage ("Error loading player component.")
         return false;
     }
 
@@ -85,7 +128,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
     {
         board [11].leftWall = "full";
         board [21].leftWall = "full";
-        board [31].leftWall = "closed";
+        board [31].leftWall = "opened";
         board [41].leftWall = "full";
         board [51].leftWall = "full";
         board [61].leftWall = "full";
@@ -110,7 +153,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
         board [19].leftWall = "full";
         board [29].leftWall = "full";
         board [39].leftWall = "full";
-        board [49].leftWall = "closed";
+        board [49].leftWall = "opened";
         board [59].leftWall = "full";
         board [69].leftWall = "full";
 
@@ -119,7 +162,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
         board [13].topWall = "full";
         board [14].topWall = "full";
         board [15].topWall = "full";
-        board [16].topWall = "closed";
+        board [16].topWall = "opened";
         board [17].topWall = "full";
         board [18].topWall = "full";
 
@@ -141,7 +184,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
 
         board [71].topWall = "full";
         board [72].topWall = "full";
-        board [73].topWall = "closed";
+        board [73].topWall = "opened";
         board [74].topWall = "full";
         board [75].topWall = "full";
         board [76].topWall = "full";
@@ -153,7 +196,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
     {
         board [11].leftWall = "full";
         board [21].leftWall = "full";
-        board [31].leftWall = "closed";
+        board [31].leftWall = "opened";
         board [41].leftWall = "full";
         board [51].leftWall = "full";
         board [61].leftWall = "full";
@@ -209,7 +252,7 @@ function createWalls () // TODO: dynamically creating walls based on background 
 
         board [71].topWall = "full";
         board [72].topWall = "full";
-        board [73].topWall = "closed";
+        board [73].topWall = "opened";
         board [74].topWall = "full";
         board [75].topWall = "full";
         board [76].topWall = "full";
@@ -220,13 +263,106 @@ function createWalls () // TODO: dynamically creating walls based on background 
     else return false
 }
 
-function isNeighbor (x, y, wallX, wallY, isLeft, wantedState) // TODO: define function and add reactions to walls and doors
+function addActionPoints ()
+{
+    for (var playerNumber = 0; playerNumber < game.players; playerNumber++)
+    {
+        for (var actionPointNumber = 0; actionPointNumber < addedActionPoints; actionPointNumber++)
+        {
+            players [playerNumber].actionPoints++;
+        }
+    }
+}
+
+function disableAllSquares ()
+{
+    for (var i = 0; i < maxIndex; i++) board [i].enabled = false;
+}
+
+function switchPlayer ()
+{
+    game.onMove++;
+    game.currentAP = players [game.onMove - 1].actionPoints;
+
+    if (turn > 0)
+    {
+        addSmoke ();
+        checkAfterEffects ();
+    }
+
+    enableAvailableSquares ();
+}
+
+function finishTurn ()
+{
+    addActionPoints ();
+
+    game.onMove = 0;
+    switchPlayer ();
+
+    game.turn++;
+}
+
+function firstMove ()
+{
+    for (var column = 1; column < maxColumn; column++)
+    {
+        if (! board [index (column, 0)].player) board [index (column, 0)].enabled = true;
+        if (! board [index (column, maxRow - 1)].player) board [index (column, maxRow - 1)].enabled = true;
+    }
+
+    for (var row = 1; row < maxRow; row++)
+    {
+        if (! board [index (0, row)].player) board [index (0, row)].enabled = true;
+        if (! board [index (maxColumn - 1, row)].player) board [index (maxColumn - 1, row)].enabled = true;
+    }
+
+    players [game.onMove - 1].ready = true;
+}
+
+function findAvailableSquares () // TODO: setup all possible moves of each player (more cannot be in the same place!!!)
+{
+    return true;
+}
+
+function enableAvailableSquares ()
+{
+    if (players [game.onMove - 1].ready) findAvailableSquares ();
+
+    else firstMove ();
+}
+
+function moveCurrentPlayer (column, row, currentPlayer)
+{
+    board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
+
+    players [game.onMove - 1].column = column;
+    players [game.onMove - 1].row = row;
+    players [game.onMove - 1].actionPoints--;
+
+    board [index (column, row)].player = true;
+
+    game.currentAP = players [game.onMove - 1].actionPoints;
+    disableAllSquares ();
+
+    if (players [game.onMove - 1].actionPoints === 0)
+    {
+        if (game.onMove >= game.players) finishTurn ();
+
+        else switchPlayer ();
+    }
+
+    else findAvailableSquares ();
+}
+
+function isNeighbor (x, y, wallX, wallY, isLeft, wantedState)
 {
     var wall = index (wallX, wallY);
 
     if (board [index (x, y)].state === wantedState)
     {
         if (isLeft && board [wall].leftWall != "full" && board [wall].leftWall != "closed" && board [wall].leftWall != "damaged") return true;
+
         if (! isLeft && board [wall].topWall != "full" && board [wall].topWall != "closed" && board [wall].topWall != "damaged") return true;
     }
 

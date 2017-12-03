@@ -12,6 +12,7 @@
  */
 
 import QtQuick 2.1
+import "../javascript/theme.js" as Theme
 
 Rectangle
 {
@@ -19,9 +20,10 @@ Rectangle
 
     property string state
     property bool alert
+    property bool player
 
-    property int row
     property int column
+    property int row
 
     property string leftWall
     property string topWall
@@ -32,14 +34,18 @@ Rectangle
     x: column * width
     y: row * height
 
-    row: 0
     column: 0
+    row: 0
+
+    enabled: false
 
     leftWall: "none"
     topWall: "none"
 
     color: "transparent"
     state: "nothing"
+    alert: false
+    player: false
 
     function actualizeState (actual_state)
     {
@@ -67,6 +73,14 @@ Rectangle
         source: actualizeState (gamesquare.state)
     }
 
+    Rectangle
+    {
+        anchors.fill: parent
+
+        color: gamesquare.enabled ? Theme.clickable : "transparent"
+        opacity: 0.5
+    }
+
     GameWall
     {
         width: 3
@@ -81,6 +95,13 @@ Rectangle
         height: 3
 
         state: topWall
+    }
+
+    MouseArea
+    {
+        anchors.fill: parent
+
+        onClicked: game.movePlayer (column, row)
     }
 }
 

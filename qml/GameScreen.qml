@@ -31,7 +31,11 @@ Window
     property int dead
     property int saved
     property int damaged
+
     property var clock
+    property int onMove
+    property int currentAP
+    property int turn
 
     width: window.width
     height: window.height
@@ -47,7 +51,11 @@ Window
     dead: 0
     saved: 0
     damaged: 0
+
     clock: new Date (0, 0, 0, 0, 0, 0)
+    onMove: 1
+    currentAP: 1
+    turn: 0
 
     title: "RESCUERS - Game Screen"
 
@@ -72,17 +80,24 @@ Window
         return actual_time
     }
 
+    function movePlayer (column, row)
+    {
+        GameBoard.moveCurrentPlayer (column, row)
+    }
+
     function pauseGame ()
     {
         if (timer.running)
         {
             timer.stop ()
             pause_button.button_text = "Resume Game"
+            gameboard.enabled = false
         }
         else
         {
             timer.start ()
             pause_button.button_text = "Pause Game"
+            gameboard.enabled = true
         }
     }
 
@@ -118,17 +133,20 @@ Window
 
             color: "transparent"
 
-            Component.onCompleted: GameBoard.startGame ()    
+            Component.onCompleted: GameBoard.startGame ()
+        }
+    }
 
-            MouseArea // TODO: delete after testing is done
+    Item // TODO: delete after testing is done
+    {
+        focus: true
+
+        Keys.onPressed:
+        {
+            if (event.key == Qt.Key_Space)
             {
-                anchors.fill: parent
-
-                onClicked:
-                {
-                    GameBoard.addSmoke ()
-                    GameBoard.checkAfterEffects ()
-                }
+                GameBoard.addSmoke ()
+                GameBoard.checkAfterEffects ()
             }
         }
     }
@@ -144,20 +162,18 @@ Window
 
     Row
     {
-        anchors.right: parent.right
-        anchors.rightMargin: parent.width / 17
+        anchors.left: parent.left
+        anchors.leftMargin: parent.width / 1.22
 
         anchors.top: parent.top
-        anchors.topMargin: parent.height / 20
+        anchors.topMargin: parent.height / 30
 
         Column
         {
-            spacing: game.height / 30
+            spacing: game.height / 40
 
             Text
             {
-                anchors.horizontalCenter: parent.horizontalCenter
-
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 120
                 color: game.timer ? Theme.combo_box : Theme.button
@@ -167,19 +183,6 @@ Window
 
             Text
             {
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                font.bold: true
-                font.pointSize: (game.height + game.width) / 140
-                color: Theme.button
-
-                text: "Players - " + game.players
-            }
-
-            Text
-            {
-                anchors.horizontalCenter: parent.horizontalCenter
-
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
@@ -189,8 +192,6 @@ Window
 
             Text
             {
-                anchors.horizontalCenter: parent.horizontalCenter
-
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
@@ -200,8 +201,6 @@ Window
 
             Text
             {
-                anchors.horizontalCenter: parent.horizontalCenter
-
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
@@ -213,15 +212,56 @@ Window
 
     Row
     {
+        anchors.left: parent.left
+        anchors.leftMargin: parent.width / 1.22
+
+        anchors.top: parent.top
+        anchors.topMargin: parent.height / 2.8
+
+        Column
+        {
+            spacing: game.height / 40
+
+            Text
+            {
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 120
+                color: Theme.button
+
+                text: "PLAYER " + game.onMove
+            }
+
+            Text
+            {
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 140
+                color: Theme.button
+
+                text: "Turn: " + game.turn
+            }
+
+            Text
+            {
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 140
+                color: Theme.button
+
+                text: "Action points: " + game.currentAP
+            }
+        }
+    }
+
+    Row
+    {
         anchors.right: parent.right
         anchors.rightMargin: parent.width / 30
 
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: parent.height / 20
+        anchors.bottomMargin: parent.height / 30
 
         Column
         {
-            spacing: game.height / 30
+            spacing: game.height / 40
 
             GameButton
             {

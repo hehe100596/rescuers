@@ -36,7 +36,7 @@ Window
 
     color: Theme.button
 
-    title: "ERROR MESSAGE"
+    title: "MESSAGE"
 
     Text
     {

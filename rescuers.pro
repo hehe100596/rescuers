@@ -37,6 +37,7 @@ OTHER_FILES += \
     img/gamewall_destroyed.jpg \
     img/gamewall_opened.jpg \
     img/gamewall_closed.jpg \
+    img/player.jpg \
     img/icon.ico
 
 DISTFILES += \
@@ -48,7 +49,8 @@ DISTFILES += \
     qml/GameScreen.qml \
     qml/GameButton.qml \
     qml/GameSquare.qml \
-    qml/GameWall.qml
+    qml/GameWall.qml \
+    qml/Player.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro

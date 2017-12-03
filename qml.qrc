@@ -9,6 +9,7 @@
         <file>qml/GameButton.qml</file>
         <file>qml/GameSquare.qml</file>
 		<file>qml/GameWall.qml</file>
+		<file>qml/Player.qml</file>
         <file>javascript/theme.js</file>
         <file>javascript/gameboard.js</file>
 		<file>img/background.jpg</file>
@@ -23,6 +24,7 @@
 		<file>img/gamewall_destroyed.jpg</file>
 		<file>img/gamewall_opened.jpg</file>
 		<file>img/gamewall_closed.jpg</file>
+		<file>img/player.jpg</file>
 		<file>img/icon.ico</file>
     </qresource>
 </RCC>
