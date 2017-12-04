@@ -64,6 +64,7 @@ function startGame ()
         addFire ();
     }
 
+    board [0].actualPlayer = true;
     firstMove ();
 }
 
@@ -289,8 +290,29 @@ function switchPlayer ()
         addSmoke ();
         checkAfterEffects ();
     }
+}
 
-    enableAvailableSquares ();
+function hurtPlayer (column, row) // TODO: fix this function according to the manual
+{
+    for (var actualPlayer = 0; actualPlayer < game.players; actualPlayer++)
+    {
+        if (players [actualPlayer].column === column && players [actualPlayer].row === row)
+        {
+            players [actualPlayer].column = 0;
+            players [actualPlayer].row = 0;
+
+            board [index (players [actualPlayer].column, players [actualPlayer].row)].player = true;
+
+            if (actualPlayer === (game.onMove - 1))
+            {
+                board [index (column, row)].actualPlayer = false;
+                board [index (players [actualPlayer].column, players [actualPlayer].row)].actualPlayer = true;
+
+                disableAllSquares ();
+                enableAvailableSquares ();
+            }
+        }
+    }
 }
 
 function finishTurn ()
@@ -298,6 +320,7 @@ function finishTurn ()
     addActionPoints ();
 
     game.onMove = 0;
+
     switchPlayer ();
 
     game.turn++;
@@ -305,13 +328,13 @@ function finishTurn ()
 
 function firstMove ()
 {
-    for (var column = 1; column < maxColumn; column++)
+    for (var column = 0; column < maxColumn; column++)
     {
         if (! board [index (column, 0)].player) board [index (column, 0)].enabled = true;
         if (! board [index (column, maxRow - 1)].player) board [index (column, maxRow - 1)].enabled = true;
     }
 
-    for (var row = 1; row < maxRow; row++)
+    for (var row = 0; row < maxRow; row++)
     {
         if (! board [index (0, row)].player) board [index (0, row)].enabled = true;
         if (! board [index (maxColumn - 1, row)].player) board [index (maxColumn - 1, row)].enabled = true;
@@ -320,9 +343,38 @@ function firstMove ()
     players [game.onMove - 1].ready = true;
 }
 
-function findAvailableSquares () // TODO: setup all possible moves of each player (more cannot be in the same place!!!)
+function findAvailableSquares () // TODO: do not forget to set smokedAlert to false !!!
 {
-    return true;
+    var playerX = players [onMove - 1].column;
+    var playerY = players [onMove - 1].row;
+
+    if (playerX > 0 && ! board [index (playerX - 1, playerY)].player)
+    {
+        if (isNeighbor (playerX - 1, playerY, playerX, playerY, true, "nothing")) board [index (playerX - 1, playerY)].enabled = true;
+
+        else; // TODO: add all possible neighbors
+    }
+
+    if (playerX < (maxColumn - 1) && ! board [index (playerX + 1, playerY)].player)
+    {
+        if (isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "nothing")) board [index (playerX + 1, playerY)].enabled = true;
+
+        else; // TODO: add all possible neighbors
+    }
+
+    if (playerY > 0 && ! board [index (playerX, playerY - 1)].player)
+    {
+        if (isNeighbor (playerX, playerY - 1, playerX, playerY, false, "nothing")) board [index (playerX, playerY - 1)].enabled = true;
+
+        else; // TODO: add all possible neighbors
+    }
+
+    if (playerY < (maxRow - 1) && ! board [index (playerX, playerY + 1)].player)
+    {
+        if (isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "nothing")) board [index (playerX, playerY + 1)].enabled = true;
+
+        else; // TODO: add all possible neighbors
+    }
 }
 
 function enableAvailableSquares ()
@@ -332,9 +384,10 @@ function enableAvailableSquares ()
     else firstMove ();
 }
 
-function moveCurrentPlayer (column, row, currentPlayer)
+function moveCurrentPlayer (column, row)
 {
     board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
+    board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].actualPlayer = false;
 
     players [game.onMove - 1].column = column;
     players [game.onMove - 1].row = row;
@@ -352,7 +405,8 @@ function moveCurrentPlayer (column, row, currentPlayer)
         else switchPlayer ();
     }
 
-    else findAvailableSquares ();
+    board [index (players [onMove - 1].column, players [onMove - 1].row)].actualPlayer = true;
+    enableAvailableSquares ();
 }
 
 function isNeighbor (x, y, wallX, wallY, isLeft, wantedState)
@@ -404,7 +458,7 @@ function createFire (fireX, fireY)
 {
     var fire = index (fireX, fireY);
 
-    if (board [fire].state === "questionMark" || board [fire].state === "fakeAlert" || board [fire].state === "realAlert") addAlert ()
+    if (board [fire].state === "questionMark" || board [fire].state === "fakeAlert" || board [fire].state === "realAlert") addAlert ();
 
     board [fire].state = "fire";
 }
@@ -537,7 +591,7 @@ function checkFireAround (fireX, fireY)
     }
 }
 
-function checkAfterEffects () // TODO: add reactions to players
+function checkAfterEffects ()
 {
     for (var column = 0; column < maxColumn; column++)
     {
@@ -545,10 +599,21 @@ function checkAfterEffects () // TODO: add reactions to players
         {
             if (board [index (column, row)].state === "smoke") checkFireAround (column, row);
 
-            if (board [index (column, row)].alert && board [index (column, row)].state === "fire")
+            if (board [index (column, row)].state === "fire")
             {
-                board [index (column, row)].alert = false;
-                game.dead++;
+                board [index (column, row)].smokedAlert = false;
+
+                if (board [index (column, row)].alert)
+                {
+                    board [index (column, row)].alert = false;
+                    game.dead++;
+                }
+
+                if (board [index (column, row)].player)
+                {
+                    board [index (column, row)].player = false;
+                    hurtPlayer (column, row);
+                }
             }
         }
     }
@@ -568,9 +633,13 @@ function addSmoke ()
 
     else if (board [smoke].state === "fire") createExplosion (smokeX, smokeY);
 
-    else if (board [smoke].state === "questionMark") addSmoke (); // TODO: find out about reaction to alerts
+    else if (board [smoke].state === "questionMark")
+    {
+        checkSmokeAround (smokeX, smokeY);
+        board [smoke].smokedAlert = true;
+    }
 
-    else showErrorMessage ("Unidentified smoking behavior."); // TODO: add reaction to players
+    else showErrorMessage ("Unidentified smoking behavior.");
 }
 
 function addFire () // USE THIS IN THE BEGINNING ONLY

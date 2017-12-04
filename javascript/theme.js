@@ -20,6 +20,8 @@ var clicked_button = "DarkRed";
 var combo_box = "Red";
 var combo_box_dropdown = "Salmon";
 var clickable = "LightGreen";
+var actual_player = "CornflowerBlue";
+var alert_in_smoke = "Red";
 
 //--------------------------------------------------------------------------------
 // End of file theme.js

@@ -21,6 +21,8 @@ Rectangle
     property string state
     property bool alert
     property bool player
+    property bool actualPlayer
+    property bool smokedAlert
 
     property int column
     property int row
@@ -37,15 +39,17 @@ Rectangle
     column: 0
     row: 0
 
+    color: "transparent"
     enabled: false
 
     leftWall: "none"
     topWall: "none"
 
-    color: "transparent"
     state: "nothing"
     alert: false
     player: false
+    actualPlayer: false
+    smokedAlert: false
 
     function actualizeState (actual_state)
     {
@@ -57,7 +61,7 @@ Rectangle
 
         else if (actual_state === "fakeAlert") return "../img/gamesquare_fakealert.jpg"
 
-        else if (actual_state === "realAlert") return "../img/gamesquare_realalert.jpg" // TODO: more than one version
+        else if (actual_state === "realAlert") return "../img/gamesquare_realalert.jpg"
 
         else return ""
     }
@@ -77,7 +81,7 @@ Rectangle
     {
         anchors.fill: parent
 
-        color: gamesquare.enabled ? Theme.clickable : "transparent"
+        color: actualPlayer ? Theme.actual_player : smokedAlert ? Theme.alert_in_smoke : gamesquare.enabled ? Theme.clickable : "transparent"
         opacity: 0.5
     }
 
