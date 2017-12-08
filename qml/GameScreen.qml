@@ -40,8 +40,8 @@ Window
     width: window.width
     height: window.height
 
-    minimumWidth: 640
-    minimumHeight: 360
+    minimumWidth: window.minimumWidth
+    minimumHeight: window.minimumHeight
 
     difficulty: window.difficulty === "Easy" ? 1 : window.difficulty === "Medium" ? 2 : 3
     players: parseInt (window.players)
@@ -147,6 +147,7 @@ Window
             {
                 GameBoard.addSmoke ()
                 GameBoard.checkAfterEffects ()
+                GameBoard.enableAvailableSquares ()
             }
         }
     }
@@ -187,7 +188,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Dead - " + game.dead + "/4"
+                text: (4 - game.dead) + " allowed deaths"
             }
 
             Text
@@ -196,7 +197,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Saved - " + game.saved + "/7"
+                text: (7 - game.saved) + " left to save"
             }
 
             Text
@@ -205,7 +206,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Damaged - " + game.damaged + "/24"
+                text: Math.floor (game.damaged / 24 * 100) + "% damage"
             }
         }
     }
@@ -246,7 +247,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: "Action points: " + game.currentAP
+                text: game.currentAP + " move(s) left"
             }
         }
     }

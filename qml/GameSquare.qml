@@ -75,13 +75,28 @@ Rectangle
         anchors.verticalCenter: parent.verticalCenter
 
         source: actualizeState (gamesquare.state)
+
+        Rectangle
+        {
+            anchors.fill: parent
+
+            color: "transparent"
+
+            Image
+            {
+                anchors.fill: parent
+
+                source: smokedAlert ? "../img/gamesquare_questionmark.jpg" : ""
+                opacity: 0.5
+            }
+        }
     }
 
     Rectangle
     {
         anchors.fill: parent
 
-        color: actualPlayer ? Theme.actual_player : smokedAlert ? Theme.alert_in_smoke : gamesquare.enabled ? Theme.clickable : "transparent"
+        color: actualPlayer ? Theme.actual_player : gamesquare.enabled ? Theme.clickable : "transparent"
         opacity: 0.5
     }
 

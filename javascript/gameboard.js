@@ -308,7 +308,6 @@ function hurtPlayer (column, row) // TODO: fix this function according to the ma
                 board [index (column, row)].actualPlayer = false;
                 board [index (players [actualPlayer].column, players [actualPlayer].row)].actualPlayer = true;
 
-                disableAllSquares ();
                 enableAvailableSquares ();
             }
         }
@@ -339,14 +338,14 @@ function firstMove ()
         if (! board [index (0, row)].player) board [index (0, row)].enabled = true;
         if (! board [index (maxColumn - 1, row)].player) board [index (maxColumn - 1, row)].enabled = true;
     }
-
-    players [game.onMove - 1].ready = true;
 }
 
 function findAvailableSquares () // TODO: do not forget to set smokedAlert to false !!!
 {
     var playerX = players [onMove - 1].column;
     var playerY = players [onMove - 1].row;
+
+    board [index (playerX, playerY)].enabled = true;
 
     if (playerX > 0 && ! board [index (playerX - 1, playerY)].player)
     {
@@ -379,6 +378,8 @@ function findAvailableSquares () // TODO: do not forget to set smokedAlert to fa
 
 function enableAvailableSquares ()
 {
+    disableAllSquares ();
+
     if (players [game.onMove - 1].ready) findAvailableSquares ();
 
     else firstMove ();
@@ -386,23 +387,33 @@ function enableAvailableSquares ()
 
 function moveCurrentPlayer (column, row)
 {
-    board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
-    board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].actualPlayer = false;
-
-    players [game.onMove - 1].column = column;
-    players [game.onMove - 1].row = row;
-    players [game.onMove - 1].actionPoints--;
-
-    board [index (column, row)].player = true;
-
-    game.currentAP = players [game.onMove - 1].actionPoints;
-    disableAllSquares ();
-
-    if (players [game.onMove - 1].actionPoints === 0)
+    if (players [game.onMove - 1].ready && players [game.onMove - 1].column === column && players [game.onMove - 1].row === row)
     {
         if (game.onMove >= game.players) finishTurn ();
 
         else switchPlayer ();
+    }
+
+    else
+    {
+        board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
+        board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].actualPlayer = false;
+
+        players [game.onMove - 1].column = column;
+        players [game.onMove - 1].row = row;
+        players [game.onMove - 1].actionPoints--;
+        players [game.onMove - 1].ready = true;
+
+        board [index (column, row)].player = true;
+
+        game.currentAP = players [game.onMove - 1].actionPoints;
+
+        if (players [game.onMove - 1].actionPoints === 0)
+        {
+            if (game.onMove >= game.players) finishTurn ();
+
+            else switchPlayer ();
+        }
     }
 
     board [index (players [onMove - 1].column, players [onMove - 1].row)].actualPlayer = true;
