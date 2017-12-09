@@ -20,6 +20,8 @@ var clicked_button = "DarkRed";
 var combo_box = "Red";
 var combo_box_dropdown = "Salmon";
 var clickable = "LightGreen";
+var doors = "DarkOrchid";
+var unpassable = "Red";
 var actual_player = "DeepSkyBlue";
 
 //--------------------------------------------------------------------------------

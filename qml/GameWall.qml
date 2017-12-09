@@ -19,12 +19,16 @@ Rectangle
     id: gamewall
 
     property string state
+    property bool isLeft
 
     state: "none"
     color: state != "none" ? Theme.button : "transparent"
 
     width: 0
     height: 0
+
+    enabled: false
+    isLeft: false
 
     function actualizeWall (actual_state)
     {
@@ -48,6 +52,21 @@ Rectangle
         anchors.verticalCenter: parent.verticalCenter
 
         source: actualizeWall (gamewall.state)
+
+        Rectangle
+        {
+            anchors.fill: parent
+
+            color: enabled && (gamewall.state === "opened" || gamewall.state === "closed") ? Theme.doors : "transparent"
+            opacity: 0.5
+        }
+
+        MouseArea
+        {
+            anchors.fill: parent
+
+            onClicked: game.moveDoors (gamesquare.column, gamesquare.row, gamewall.isLeft)
+        }
     }
 }
 

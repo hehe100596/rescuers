@@ -11,14 +11,18 @@
  *                 (xbacov04@stud.fit.vutbr.cz)
  */
 
+var maxMedics = 8;
 var maxColumn = 10;
 var maxRow = 8;
 var maxPlayers = 6;
 var maxIndex = maxRow * maxColumn;
+
 var addedActionPoints = 4;
+var component;
+
 var board = new Array (maxIndex);
 var players = new Array (maxPlayers);
-var component;
+var medics = new Array (maxMedics);
 
 function index (column, row)
 {
@@ -47,6 +51,7 @@ function startGame ()
     }
 
     createWalls ();
+    createMedics ();
 
     for (var counter = 0; counter < game.players; counter++)
     {
@@ -64,7 +69,6 @@ function startGame ()
         addFire ();
     }
 
-    board [0].actualPlayer = true;
     firstMove ();
 }
 
@@ -261,7 +265,36 @@ function createWalls () // TODO: dynamically creating walls based on background 
         board [78].topWall = "full";
     }
 
-    else return false
+    else return;
+}
+
+function createMedics () // TODO: dynamically creating medics based on preferences
+{
+    for (var i = 0; i < maxMedics; i++) medics [i] = {};
+
+    medics [0].x = 5;
+    medics [0].y = 0;
+
+    medics [1].x = 6;
+    medics [1].y = 0;
+
+    medics [2].x = 3;
+    medics [2].y = maxRow - 1;
+
+    medics [3].x = 4;
+    medics [3].y = maxRow - 1;
+
+    medics [4].x = 0;
+    medics [4].y = 3;
+
+    medics [5].x = 0;
+    medics [5].y = 4;
+
+    medics [6].x = maxColumn - 1;
+    medics [6].y = 3;
+
+    medics [7].x = maxColumn - 1;
+    medics [7].y = 4;
 }
 
 function addActionPoints ()
@@ -277,7 +310,13 @@ function addActionPoints ()
 
 function disableAllSquares ()
 {
-    for (var i = 0; i < maxIndex; i++) board [i].enabled = false;
+    for (var i = 0; i < maxIndex; i++)
+    {
+        board [i].enabled = false;
+        board [i].leftDoorsEnabled = false;
+        board [i].topDoorsEnabled = false;
+        board [i].actualPlayer = false;
+    }
 }
 
 function switchPlayer ()
@@ -292,24 +331,55 @@ function switchPlayer ()
     }
 }
 
-function hurtPlayer (column, row) // TODO: fix this function according to the manual
+function getDistance (playerX, playerY, medicX, medicY)
 {
+    if (board [index (medicX, medicY)].state === "fire" /*|| board [index (medicX, medicY)].player*/) return 100;
+
+    else
+    {
+        var distanceX = Math.abs (playerX - medicX);
+        var distanceY = Math.abs (playerY - medicY);
+        var distance = distanceX + distanceY;
+
+        return distance;
+    }
+}
+
+function findClosestMedicTo (column, row) // TODO: add possibility of choice
+{
+    var lowestDistance = 100;
+    var lowestMedic = 0;
+
+    for (var i = 0; i < maxMedics; i++)
+    {
+        medics [i].distance = getDistance (column, row, medics [i].x, medics [i].y);
+
+        if (medics [i].distance < lowestDistance)
+        {
+            lowestDistance = medics [i].distance;
+            lowestMedic = i;
+        }
+    }
+
+    if (lowestDistance === 100) game.gameOver ();
+
+    return medics [lowestMedic];
+}
+
+function hurtPlayer (column, row)
+{
+    var closestMedic = findClosestMedicTo (column, row);
+
     for (var actualPlayer = 0; actualPlayer < game.players; actualPlayer++)
     {
         if (players [actualPlayer].column === column && players [actualPlayer].row === row)
         {
-            players [actualPlayer].column = 0;
-            players [actualPlayer].row = 0;
+            players [actualPlayer].column = closestMedic.x;
+            players [actualPlayer].row = closestMedic.y;
 
             board [index (players [actualPlayer].column, players [actualPlayer].row)].player = true;
 
-            if (actualPlayer === (game.onMove - 1))
-            {
-                board [index (column, row)].actualPlayer = false;
-                board [index (players [actualPlayer].column, players [actualPlayer].row)].actualPlayer = true;
-
-                enableAvailableSquares ();
-            }
+            if (actualPlayer === (game.onMove - 1)) enableAvailableSquares ();;
         }
     }
 }
@@ -327,52 +397,67 @@ function finishTurn ()
 
 function firstMove ()
 {
+    board [0].actualPlayer = true;
+
     for (var column = 0; column < maxColumn; column++)
     {
-        if (! board [index (column, 0)].player) board [index (column, 0)].enabled = true;
-        if (! board [index (column, maxRow - 1)].player) board [index (column, maxRow - 1)].enabled = true;
+        /*if (! board [index (column, 0)].player)*/ board [index (column, 0)].enabled = true;
+        /*if (! board [index (column, maxRow - 1)].player)*/ board [index (column, maxRow - 1)].enabled = true;
     }
 
     for (var row = 0; row < maxRow; row++)
     {
-        if (! board [index (0, row)].player) board [index (0, row)].enabled = true;
-        if (! board [index (maxColumn - 1, row)].player) board [index (maxColumn - 1, row)].enabled = true;
+        /*if (! board [index (0, row)].player)*/ board [index (0, row)].enabled = true;
+        /*if (! board [index (maxColumn - 1, row)].player)*/ board [index (maxColumn - 1, row)].enabled = true;
     }
 }
 
-function findAvailableSquares () // TODO: do not forget to set smokedAlert to false !!!
+function findAvailableSquares () // TODO: fix so that it is possible to walk into smoke
 {
     var playerX = players [onMove - 1].column;
     var playerY = players [onMove - 1].row;
 
     board [index (playerX, playerY)].enabled = true;
+    board [index (playerX, playerY)].actualPlayer = true;
+    board [index (playerX, playerY)].leftDoorsEnabled = true;
+    board [index (playerX, playerY)].topDoorsEnabled = true;
 
-    if (playerX > 0 && ! board [index (playerX - 1, playerY)].player)
+    if (playerX > 0 /*&& ! board [index (playerX - 1, playerY)].player*/)
     {
-        if (isNeighbor (playerX - 1, playerY, playerX, playerY, true, "nothing")) board [index (playerX - 1, playerY)].enabled = true;
+        board [index (playerX - 1, playerY)].unpassable = false;
 
-        else; // TODO: add all possible neighbors
+        if (! isNeighbor (playerX - 1, playerY, playerX, playerY, true, "nothing")) board [index (playerX - 1, playerY)].unpassable = true;
+
+        board [index (playerX - 1, playerY)].enabled = true;
     }
 
-    if (playerX < (maxColumn - 1) && ! board [index (playerX + 1, playerY)].player)
+    if (playerX < (maxColumn - 1) /*&& ! board [index (playerX + 1, playerY)].player*/)
     {
-        if (isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "nothing")) board [index (playerX + 1, playerY)].enabled = true;
+        board [index (playerX + 1, playerY)].unpassable = false;
 
-        else; // TODO: add all possible neighbors
+        if (! isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "nothing")) board [index (playerX + 1, playerY)].unpassable = true;
+
+        board [index (playerX + 1, playerY)].enabled = true;
+        board [index (playerX + 1, playerY)].leftDoorsEnabled = true;
     }
 
-    if (playerY > 0 && ! board [index (playerX, playerY - 1)].player)
+    if (playerY > 0 /*&& ! board [index (playerX, playerY - 1)].player*/)
     {
-        if (isNeighbor (playerX, playerY - 1, playerX, playerY, false, "nothing")) board [index (playerX, playerY - 1)].enabled = true;
+        board [index (playerX, playerY - 1)].unpassable = false;
 
-        else; // TODO: add all possible neighbors
+        if (! isNeighbor (playerX, playerY - 1, playerX, playerY, false, "nothing")) board [index (playerX, playerY - 1)].unpassable = true;
+
+        board [index (playerX, playerY - 1)].enabled = true;
     }
 
-    if (playerY < (maxRow - 1) && ! board [index (playerX, playerY + 1)].player)
+    if (playerY < (maxRow - 1) /*&& ! board [index (playerX, playerY + 1)].player*/)
     {
-        if (isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "nothing")) board [index (playerX, playerY + 1)].enabled = true;
+        board [index (playerX, playerY + 1)].unpassable = false;
 
-        else; // TODO: add all possible neighbors
+        if (! isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "nothing")) board [index (playerX, playerY + 1)].unpassable = true;
+
+        board [index (playerX, playerY + 1)].enabled = true;
+        board [index (playerX, playerY + 1)].topDoorsEnabled = true;
     }
 }
 
@@ -383,6 +468,22 @@ function enableAvailableSquares ()
     if (players [game.onMove - 1].ready) findAvailableSquares ();
 
     else firstMove ();
+}
+
+function finishAction ()
+{
+    players [game.onMove - 1].actionPoints--;
+
+    game.currentAP = players [game.onMove - 1].actionPoints;
+
+    if (players [game.onMove - 1].actionPoints === 0)
+    {
+        if (game.onMove >= game.players) finishTurn ();
+
+        else switchPlayer ();
+    }
+
+    enableAvailableSquares ();
 }
 
 function moveCurrentPlayer (column, row)
@@ -397,27 +498,87 @@ function moveCurrentPlayer (column, row)
     else
     {
         board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
-        board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].actualPlayer = false;
 
         players [game.onMove - 1].column = column;
         players [game.onMove - 1].row = row;
-        players [game.onMove - 1].actionPoints--;
         players [game.onMove - 1].ready = true;
 
         board [index (column, row)].player = true;
 
-        game.currentAP = players [game.onMove - 1].actionPoints;
-
-        if (players [game.onMove - 1].actionPoints === 0)
-        {
-            if (game.onMove >= game.players) finishTurn ();
-
-            else switchPlayer ();
-        }
+        finishAction ();
     }
 
-    board [index (players [onMove - 1].column, players [onMove - 1].row)].actualPlayer = true;
     enableAvailableSquares ();
+}
+
+function playerAction (column, row) // TODO: add all possible actions
+{
+    if (players [game.onMove - 1].column < column)
+    {
+        var rightWall = board [index (column, row)].leftWall;
+
+        if (rightWall === "full" || rightWall === "damaged") damageWall (column, row, true);
+
+        else if (rightWall === "closed") board [index (column, row)].leftWall = "opened";
+
+        else if (board [index (column, row)].state === "smoke" || board [index (column, row)].state === "fire") extinguishFire (column, row);
+    }
+
+    else if (players [game.onMove - 1].column > column)
+    {
+        var leftWall = board [index (column + 1, row)].leftWall;
+
+        if (leftWall === "full" || leftWall === "damaged") damageWall (column + 1, row, true);
+
+        else if (leftWall === "closed") board [index (column + 1, row)].leftWall = "opened";
+
+        else if (board [index (column, row)].state === "smoke" || board [index (column, row)].state === "fire") extinguishFire (column, row);
+    }
+
+    else if (players [game.onMove - 1].row < row)
+    {
+        var bottomWall = board [index (column, row)].topWall;
+
+        if (bottomWall === "full" || bottomWall === "damaged") damageWall (column, row, false);
+
+        else if (bottomWall === "closed") board [index (column, row)].topWall = "opened";
+
+        else if (board [index (column, row)].state === "smoke" || board [index (column, row)].state === "fire") extinguishFire (column, row);
+    }
+
+    else if (players [game.onMove - 1].row > row)
+    {
+        var topWall = board [index (column, row + 1)].topWall;
+
+        if (topWall === "full" || topWall === "damaged") damageWall (column, row + 1, false);
+
+        else if (topWall === "closed") board [index (column, row + 1)].topWall = "opened";
+
+        else if (board [index (column, row)].state === "smoke" || board [index (column, row)].state === "fire") extinguishFire (column, row);
+    }
+
+    else showErrorMessage ("Unidentified behavior.");
+
+    finishAction ();
+}
+
+function moveDoors (column, row, isLeft)
+{
+    if (isLeft)
+    {
+        if (board [index (column, row)].leftWall === "closed") board [index (column, row)].leftWall = "opened";
+
+        else if (board [index (column, row)].leftWall === "opened") board [index (column, row)].leftWall = "closed";
+    }
+
+    else
+    {
+        if (board [index (column, row)].topWall === "closed") board [index (column, row)].topWall = "opened";
+
+        else if (board [index (column, row)].topWall === "opened") board [index (column, row)].topWall = "closed";
+    }
+
+    finishAction ();
 }
 
 function isNeighbor (x, y, wallX, wallY, isLeft, wantedState)
@@ -463,6 +624,24 @@ function damageWall (wallX, wallY, isLeft)
 
         else showErrorMessage ("Unidentified damaging behavior.");
     }
+}
+
+function extinguishFire (fireX, fireY) // TODO: fix so that it is possible to walk into smoke and extinguish on the same place player stands on
+{
+    var fire = index (fireX, fireY);
+
+    if (board [fire].state === "smoke")
+    {
+        if (board [fire].smokedAlert)
+        {
+            board [fire].smokedAlert = false;
+            board [fire].state = "questionMark";
+        }
+
+        else board [fire].state = "nothing";
+    }
+
+    else board [fire].state = "smoke";
 }
 
 function createFire (fireX, fireY)

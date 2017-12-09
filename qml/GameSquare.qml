@@ -23,6 +23,9 @@ Rectangle
     property bool player
     property bool actualPlayer
     property bool smokedAlert
+    property bool unpassable
+    property bool leftDoorsEnabled
+    property bool topDoorsEnabled
 
     property int column
     property int row
@@ -50,6 +53,9 @@ Rectangle
     player: false
     actualPlayer: false
     smokedAlert: false
+    unpassable: false
+    leftDoorsEnabled: false
+    topDoorsEnabled: false
 
     function actualizeState (actual_state)
     {
@@ -96,8 +102,15 @@ Rectangle
     {
         anchors.fill: parent
 
-        color: actualPlayer ? Theme.actual_player : gamesquare.enabled ? Theme.clickable : "transparent"
+        color: actualPlayer ? Theme.actual_player : gamesquare.enabled ? unpassable ? Theme.unpassable : Theme.clickable : "transparent"
         opacity: 0.5
+    }    
+
+    MouseArea
+    {
+        anchors.fill: parent
+
+        onClicked: unpassable ? game.playerAction (column, row) : game.movePlayer (column, row)
     }
 
     GameWall
@@ -106,6 +119,8 @@ Rectangle
         height: gamesquare.height
 
         state: leftWall
+        enabled: leftDoorsEnabled
+        isLeft: true
     }
 
     GameWall
@@ -114,13 +129,8 @@ Rectangle
         height: 3
 
         state: topWall
-    }
-
-    MouseArea
-    {
-        anchors.fill: parent
-
-        onClicked: game.movePlayer (column, row)
+        enabled: topDoorsEnabled
+        isLeft: false
     }
 }
 

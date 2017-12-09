@@ -85,6 +85,16 @@ Window
         GameBoard.moveCurrentPlayer (column, row)
     }
 
+    function playerAction (column, row)
+    {
+        GameBoard.playerAction (column, row)
+    }
+
+    function moveDoors (column, row, isLeft)
+    {
+        GameBoard.moveDoors (column, row, isLeft)
+    }
+
     function pauseGame ()
     {
         if (timer.running)
