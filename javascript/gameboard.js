@@ -643,8 +643,7 @@ function createFire (fireX, fireY)
 {
     var fire = index (fireX, fireY);
 
-    if (board [fire].state === "questionMark" || board [fire].state === "fakeAlert" ||
-        board [fire].state === "realAlert" || board [fire].smokedAlert) actualAlerts--;
+    if (board [fire].state === "questionMark" || board [fire].state === "realAlert" || board [fire].smokedAlert) actualAlerts--;
 
     board [fire].smokedAlert = false;
     board [fire].state = "fire";
