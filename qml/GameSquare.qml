@@ -65,11 +65,16 @@ Rectangle
 
         else if (actual_state === "questionMark") return "../img/gamesquare_questionmark.jpg"
 
-        else if (actual_state === "fakeAlert") return "../img/gamesquare_fakealert.jpg"
-
         else if (actual_state === "realAlert") return "../img/gamesquare_realalert.jpg"
 
         else return ""
+    }
+
+    MouseArea
+    {
+        anchors.fill: parent
+
+        onClicked: unpassable ? game.playerAction (column, row) : game.movePlayer (column, row)
     }
 
     Image
@@ -86,14 +91,24 @@ Rectangle
         {
             anchors.fill: parent
 
-            color: "transparent"
+            color: gamesquare.enabled && (gamesquare.state === "smoke" || gamesquare.state === "fire") ? Theme.extinguishable : "transparent"
+            opacity: 0.5
 
             Image
             {
                 anchors.fill: parent
 
                 source: smokedAlert ? "../img/gamesquare_questionmark.jpg" : ""
-                opacity: 0.5
+                opacity: 0.6
+            }
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                enabled: gamesquare.state != "nothing" ? true : false
+
+                onClicked: game.playerAction (column, row)
             }
         }
     }
@@ -104,13 +119,6 @@ Rectangle
 
         color: actualPlayer ? Theme.actual_player : gamesquare.enabled ? unpassable ? Theme.unpassable : Theme.clickable : "transparent"
         opacity: 0.5
-    }    
-
-    MouseArea
-    {
-        anchors.fill: parent
-
-        onClicked: unpassable ? game.playerAction (column, row) : game.movePlayer (column, row)
     }
 
     GameWall

@@ -28,7 +28,6 @@ OTHER_FILES += \
     img/background.jpg \
     img/1st_edition_gameboard.jpg \
     img/2nd_edition_gameboard.jpg \
-    img/gamesquare_fakealert.jpg \
     img/gamesquare_fire.jpg \
     img/gamesquare_questionmark.jpg \
     img/gamesquare_realalert.jpg \

@@ -12,12 +12,15 @@
  */
 
 var maxMedics = 8;
+var maxAlerts = 3;
 var maxColumn = 10;
 var maxRow = 8;
 var maxPlayers = 6;
-var maxIndex = maxRow * maxColumn;
 
+var maxIndex = maxRow * maxColumn;
 var addedActionPoints = 4;
+
+var actualAlerts;
 var component;
 
 var board = new Array (maxIndex);
@@ -31,15 +34,9 @@ function index (column, row)
 
 function startGame ()
 {
-    for (var i = 0; i < maxIndex; i++)
-    {
-        if (board [i] != null) board [i].destroy ();
-    }
+    for (var i = 0; i < maxIndex; i++) if (board [i] != null) board [i].destroy ();
 
-    for (var j = 0; j < maxPlayers; j++)
-    {
-        if (board [j] != null) board [j].destroy ();
-    }
+    for (var j = 0; j < maxPlayers; j++) if (board [j] != null) board [j].destroy ();
 
     for (var column = 0; column < maxColumn; column++)
     {
@@ -59,15 +56,9 @@ function startGame ()
         createPlayer (counter);
     }
 
-    for (var alerts = 0; alerts < 3; alerts++)
-    {
-        addAlert ()
-    }
+    for (actualAlerts = 0; actualAlerts < maxAlerts; actualAlerts++) addAlert ();
 
-    for (var fires = 0; fires < (game.difficulty * 5); fires++)
-    {
-        addFire ();
-    }
+    for (var fires = 0; fires < (game.difficulty * 5); fires++) addFire ();
 
     firstMove ();
 }
@@ -426,7 +417,8 @@ function findAvailableSquares () // TODO: fix so that it is possible to walk int
     {
         board [index (playerX - 1, playerY)].unpassable = false;
 
-        if (! isNeighbor (playerX - 1, playerY, playerX, playerY, true, "nothing")) board [index (playerX - 1, playerY)].unpassable = true;
+        if (! isNeighbor (playerX - 1, playerY, playerX, playerY, true, "nothing") &&
+            ! isNeighbor (playerX - 1, playerY, playerX, playerY, true, "smoke")) board [index (playerX - 1, playerY)].unpassable = true;
 
         board [index (playerX - 1, playerY)].enabled = true;
     }
@@ -435,7 +427,8 @@ function findAvailableSquares () // TODO: fix so that it is possible to walk int
     {
         board [index (playerX + 1, playerY)].unpassable = false;
 
-        if (! isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "nothing")) board [index (playerX + 1, playerY)].unpassable = true;
+        if (! isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "nothing") &&
+            ! isNeighbor (playerX + 1, playerY, playerX + 1, playerY, true, "smoke")) board [index (playerX + 1, playerY)].unpassable = true;
 
         board [index (playerX + 1, playerY)].enabled = true;
         board [index (playerX + 1, playerY)].leftDoorsEnabled = true;
@@ -445,7 +438,8 @@ function findAvailableSquares () // TODO: fix so that it is possible to walk int
     {
         board [index (playerX, playerY - 1)].unpassable = false;
 
-        if (! isNeighbor (playerX, playerY - 1, playerX, playerY, false, "nothing")) board [index (playerX, playerY - 1)].unpassable = true;
+        if (! isNeighbor (playerX, playerY - 1, playerX, playerY, false, "nothing") &&
+            ! isNeighbor (playerX, playerY - 1, playerX, playerY, false, "smoke")) board [index (playerX, playerY - 1)].unpassable = true;
 
         board [index (playerX, playerY - 1)].enabled = true;
     }
@@ -454,7 +448,8 @@ function findAvailableSquares () // TODO: fix so that it is possible to walk int
     {
         board [index (playerX, playerY + 1)].unpassable = false;
 
-        if (! isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "nothing")) board [index (playerX, playerY + 1)].unpassable = true;
+        if (! isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "nothing") &&
+            ! isNeighbor (playerX, playerY + 1, playerX, playerY + 1, false, "smoke")) board [index (playerX, playerY + 1)].unpassable = true;
 
         board [index (playerX, playerY + 1)].enabled = true;
         board [index (playerX, playerY + 1)].topDoorsEnabled = true;
@@ -557,7 +552,7 @@ function playerAction (column, row) // TODO: add all possible actions
         else if (board [index (column, row)].state === "smoke" || board [index (column, row)].state === "fire") extinguishFire (column, row);
     }
 
-    else showErrorMessage ("Unidentified behavior.");
+    else extinguishFire (column, row);
 
     finishAction ();
 }
@@ -648,8 +643,10 @@ function createFire (fireX, fireY)
 {
     var fire = index (fireX, fireY);
 
-    if (board [fire].state === "questionMark" || board [fire].state === "fakeAlert" || board [fire].state === "realAlert") addAlert ();
+    if (board [fire].state === "questionMark" || board [fire].state === "fakeAlert" ||
+        board [fire].state === "realAlert" || board [fire].smokedAlert) actualAlerts--;
 
+    board [fire].smokedAlert = false;
     board [fire].state = "fire";
 }
 
@@ -766,7 +763,7 @@ function checkSmokeAround (smokeX, smokeY)
         (smokeX < (maxColumn - 1) && isNeighbor (smokeX + 1, smokeY, smokeX + 1, smokeY, true, "fire")) ||
         (smokeY > 0 && isNeighbor (smokeX, smokeY - 1, smokeX, smokeY, false, "fire")) ||
         (smokeY < (maxRow - 1) && isNeighbor (smokeX, smokeY + 1, smokeX, smokeY + 1, false, "fire")))
-        board [index (smokeX, smokeY)].state = "fire";
+        createFire (smokeX, smokeY);
 }
 
 function checkFireAround (fireX, fireY)
@@ -776,7 +773,7 @@ function checkFireAround (fireX, fireY)
         (fireY > 0 && isNeighbor (fireX, fireY - 1, fireX, fireY, false, "fire")) ||
         (fireY < (maxRow - 1) && isNeighbor (fireX, fireY + 1, fireX, fireY + 1, false, "fire")))
     {
-        board [index (fireX, fireY)].state = "fire";
+        createFire (fireX, fireY);
         checkAfterEffects ();
     }
 }
@@ -791,8 +788,6 @@ function checkAfterEffects ()
 
             if (board [index (column, row)].state === "fire")
             {
-                board [index (column, row)].smokedAlert = false;
-
                 if (board [index (column, row)].alert)
                 {
                     board [index (column, row)].alert = false;
@@ -803,6 +798,12 @@ function checkAfterEffects ()
                 {
                     board [index (column, row)].player = false;
                     hurtPlayer (column, row);
+                }
+
+                while (actualAlerts < maxAlerts)
+                {
+                    addAlert ();
+                    actualAlerts++;
                 }
             }
         }
@@ -819,14 +820,14 @@ function addSmoke ()
 
     if (board [smoke].state === "nothing") checkSmokeAround (smokeX, smokeY);
 
-    else if (board [smoke].state === "smoke") board [smoke].state = "fire";
+    else if (board [smoke].state === "smoke") createFire (smokeX, smokeY);
 
     else if (board [smoke].state === "fire") createExplosion (smokeX, smokeY);
 
     else if (board [smoke].state === "questionMark")
     {
-        checkSmokeAround (smokeX, smokeY);
         board [smoke].smokedAlert = true;
+        checkSmokeAround (smokeX, smokeY);
     }
 
     else showErrorMessage ("Unidentified smoking behavior.");
@@ -851,7 +852,7 @@ function addAlert ()
     var alertY = Math.floor ((Math.random () * (maxRow - 2)) + 1);
     var alert = index (alertX, alertY);
 
-    if (board [alert].state === "questionMark") addAlert ();
+    if (board [alert].state === "questionMark" || board [alert].smokedAlert) addAlert ();
 
     else
     {

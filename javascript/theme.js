@@ -23,6 +23,7 @@ var clickable = "LightGreen";
 var doors = "DarkOrchid";
 var unpassable = "Red";
 var actual_player = "DeepSkyBlue";
+var extinguishable = "DodgerBlue";
 
 //--------------------------------------------------------------------------------
 // End of file theme.js
