@@ -20,6 +20,7 @@ Rectangle
 
     property string state
     property bool isLeft
+    property bool isClickable
 
     state: "none"
     color: state != "none" ? Theme.button : "transparent"
@@ -29,6 +30,7 @@ Rectangle
 
     enabled: false
     isLeft: false
+    isClickable: gamewall.state != "full" && gamewall.state != "none" && gamewall.state != "destroyed" ? true : false
 
     function actualizeWall (actual_state)
     {
@@ -57,13 +59,15 @@ Rectangle
         {
             anchors.fill: parent
 
-            color: enabled && (gamewall.state === "opened" || gamewall.state === "closed") ? Theme.doors : "transparent"
+            color: enabled && isClickable ? Theme.doors : "transparent"
             opacity: 0.5
         }
 
         MouseArea
         {
             anchors.fill: parent
+
+            enabled: isClickable ? true : false
 
             onClicked: game.moveDoors (gamesquare.column, gamesquare.row, gamewall.isLeft)
         }

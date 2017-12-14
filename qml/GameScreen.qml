@@ -35,6 +35,7 @@ Window
     property var clock
     property int onMove
     property int currentAP
+    property bool currentLoad
     property int turn
 
     width: window.width
@@ -55,6 +56,7 @@ Window
     clock: new Date (0, 0, 0, 0, 0, 0)
     onMove: 1
     currentAP: 1
+    currentLoad: false
     turn: 0
 
     title: "RESCUERS - Game Screen"
@@ -77,6 +79,7 @@ Window
     function actualizeTimer (actual_time, seconds)
     {
         if (actual_time.getHours () < 24) actual_time.setSeconds (actual_time.getSeconds () + seconds)
+
         return actual_time
     }
 
@@ -111,10 +114,14 @@ Window
         }
     }
 
-    function gameOver ()
+    function gameOver (isWin)
     {
         timer.stop ()
-        showErrorMessage ("Game over. You lose.")
+
+        if (isWin) showErrorMessage ("Congratulations! You win!")
+
+        else showErrorMessage ("Game over. You lose.")
+
         gameboard.enabled = false
     }
 
@@ -174,7 +181,7 @@ Window
     Row
     {
         anchors.left: parent.left
-        anchors.leftMargin: parent.width / 1.22
+        anchors.leftMargin: parent.width / 1.23
 
         anchors.top: parent.top
         anchors.topMargin: parent.height / 30
@@ -224,10 +231,10 @@ Window
     Row
     {
         anchors.left: parent.left
-        anchors.leftMargin: parent.width / 1.22
+        anchors.leftMargin: parent.width / 1.23
 
         anchors.top: parent.top
-        anchors.topMargin: parent.height / 2.8
+        anchors.topMargin: parent.height / 3
 
         Column
         {
@@ -255,9 +262,18 @@ Window
             {
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 140
-                color: Theme.button
+                color: game.currentLoad ? Theme.combo_box : Theme.button
 
                 text: game.currentAP + " move(s) left"
+            }
+
+            Text
+            {
+                font.bold: true
+                font.pointSize: (game.height + game.width) / 140
+                color: game.currentLoad ? Theme.combo_box : Theme.button
+
+                text: game.currentLoad ? "carrying 1 person" : "no person carried"
             }
         }
     }

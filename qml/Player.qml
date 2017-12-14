@@ -21,7 +21,10 @@ Rectangle
     property int row
 
     property int actionPoints
+    property bool currentLoad
+
     property bool ready
+    property bool overlapping
 
     width: gameboard.width / 10
     height: gameboard.height / 8
@@ -33,8 +36,12 @@ Rectangle
     y: row * height
 
     color: "transparent"
+
     actionPoints: 1
+    currentLoad: false
+
     ready: false
+    overlapping: false
 
     Image
     {
@@ -45,6 +52,8 @@ Rectangle
         anchors.verticalCenter: parent.verticalCenter
 
         source: "../img/player.jpg"
+
+        opacity: overlapping ? 0.5 : 1
     }
 }
 

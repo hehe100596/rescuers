@@ -24,8 +24,10 @@ Rectangle
     property bool actualPlayer
     property bool smokedAlert
     property bool unpassable
+    property bool extinguishableFire
     property bool leftDoorsEnabled
     property bool topDoorsEnabled
+    property bool isImageClickable
 
     property int column
     property int row
@@ -54,8 +56,10 @@ Rectangle
     actualPlayer: false
     smokedAlert: false
     unpassable: false
+    extinguishableFire: false
     leftDoorsEnabled: false
     topDoorsEnabled: false
+    isImageClickable: (actualPlayer && state === "realAlert") || (state != "realAlert" && state != "nothing") ? true : false
 
     function actualizeState (actual_state)
     {
@@ -80,7 +84,9 @@ Rectangle
     Image
     {
         width: parent.width / 2
-        height: parent.height / 2
+        height: parent.height / 2        
+
+        z: gamesquare.z + 1
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -91,8 +97,8 @@ Rectangle
         {
             anchors.fill: parent
 
-            color: gamesquare.enabled && (gamesquare.state === "smoke" || gamesquare.state === "fire") ? Theme.extinguishable : "transparent"
-            opacity: 0.5
+            color: gamesquare.enabled && (! unpassable || extinguishableFire) && isImageClickable ? Theme.clickable_state : "transparent"
+            opacity: 0.6
 
             Image
             {
@@ -106,7 +112,7 @@ Rectangle
             {
                 anchors.fill: parent
 
-                enabled: gamesquare.state != "nothing" ? true : false
+                enabled: isImageClickable ? true : false
 
                 onClicked: game.playerAction (column, row)
             }

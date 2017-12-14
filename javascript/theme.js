@@ -20,10 +20,10 @@ var clicked_button = "DarkRed";
 var combo_box = "Red";
 var combo_box_dropdown = "Salmon";
 var clickable = "LightGreen";
-var doors = "DarkOrchid";
+var doors = "Gold";
 var unpassable = "Red";
 var actual_player = "DeepSkyBlue";
-var extinguishable = "DodgerBlue";
+var clickable_state = "Gold";
 
 //--------------------------------------------------------------------------------
 // End of file theme.js
