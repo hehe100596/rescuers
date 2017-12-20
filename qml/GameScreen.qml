@@ -36,6 +36,7 @@ Window
     property int onMove
     property int currentAP
     property bool currentLoad
+    property bool unloadable
     property int turn
 
     width: window.width
@@ -57,6 +58,7 @@ Window
     onMove: 1
     currentAP: 1
     currentLoad: false
+    unloadable: false
     turn: 0
 
     title: "RESCUERS - Game Screen"
@@ -90,7 +92,9 @@ Window
 
     function playerAction (column, row)
     {
-        GameBoard.playerAction (column, row)
+        if (column === -1 && row === -1) GameBoard.unloadAlert ()
+
+        else GameBoard.playerAction (column, row)
     }
 
     function moveDoors (column, row, isLeft)
@@ -181,7 +185,7 @@ Window
     Row
     {
         anchors.left: parent.left
-        anchors.leftMargin: parent.width / 1.23
+        anchors.leftMargin: parent.width / 1.22
 
         anchors.top: parent.top
         anchors.topMargin: parent.height / 30
@@ -231,7 +235,7 @@ Window
     Row
     {
         anchors.left: parent.left
-        anchors.leftMargin: parent.width / 1.23
+        anchors.leftMargin: parent.width / 1.22
 
         anchors.top: parent.top
         anchors.topMargin: parent.height / 3
@@ -271,9 +275,41 @@ Window
             {
                 font.bold: true
                 font.pointSize: (game.height + game.width) / 140
-                color: game.currentLoad ? Theme.combo_box : Theme.button
+                color: Theme.button
 
-                text: game.currentLoad ? "carrying 1 person" : "no person carried"
+                text: game.currentLoad ? "carried: " : "carried: 0"
+
+                Rectangle
+                {
+                    anchors.left: parent.right
+                    visible: game.currentLoad ? true : false
+
+                    width: gameboard.width / 38
+                    height: gameboard.height / 30
+
+                    Image
+                    {
+                        anchors.fill: parent
+
+                        source: "../img/gamesquare_realalert.jpg"
+
+                        Rectangle
+                        {
+                            anchors.fill: parent
+
+                            color: unloadable ? Theme.clickable_state : "transparent"
+                            opacity: 0.6
+                        }
+                    }
+
+                    MouseArea
+                    {
+                        enabled: unloadable ? true : false
+                        anchors.fill: parent
+
+                        onClicked: game.playerAction (-1, -1)
+                    }
+                }
             }
         }
     }

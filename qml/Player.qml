@@ -55,6 +55,22 @@ Rectangle
 
         opacity: overlapping ? 0.5 : 1
     }
+
+    Behavior on x
+    {
+        NumberAnimation
+        {
+            duration: 300
+        }
+    }
+
+    Behavior on y
+    {
+        NumberAnimation
+        {
+            duration: 300
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------

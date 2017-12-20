@@ -317,6 +317,10 @@ function switchPlayer ()
     game.currentAP = players [game.onMove - 1].actionPoints;
     game.currentLoad = players [game.onMove - 1].currentLoad;
 
+    if (board [index (players [onMove - 1].column, players [onMove - 1].row)].state === "nothing") game.unloadable = true;
+
+    else game.unloadable = false;
+
     if (turn > 0)
     {
         addSmoke ();
@@ -502,6 +506,7 @@ function finishAction ()
             board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].alert = false;
 
             game.currentLoad = players [game.onMove - 1].currentLoad;
+            actualAlerts--;
             game.saved++;
         }
     }
@@ -540,6 +545,10 @@ function moveCurrentPlayer (column, row)
             players [game.onMove - 1].actionPoints--;
             board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].alert = false;
             board [index (column, row)].alert = true;
+
+            if (board [index (column, row)].state === "nothing") game.unloadable = true;
+
+            else game.unloadable = false;
         }
 
         board [index (players [game.onMove - 1].column, players [game.onMove - 1].row)].player = false;
@@ -554,7 +563,11 @@ function moveCurrentPlayer (column, row)
 
         else players [game.onMove - 1].overlapping = false;
 
-        if (board [index (column, row)].state === "questionMark") revealAlert (column, row);
+        if (board [index (column, row)].state === "questionMark")
+        {
+            players [game.onMove - 1].overlapping = false;
+            revealAlert (column, row);
+        }
 
         finishAction ();
     }
@@ -571,8 +584,6 @@ function revealAlert (alertX, alertY)
     else
     {
         board [alert].state = "nothing";
-        players [game.onMove - 1].overlapping = false;
-
         actualAlerts--;
     }
 }
@@ -585,20 +596,21 @@ function executeAction (column, row)
 
     else if (board [index (column, row)].state === "realAlert")
     {
+        players [game.onMove - 1].actionPoints++;
+
         if (players [game.onMove - 1].currentLoad)
         {
             showErrorMessage ("Only 1 person can be carried at the same time.");
-            players [game.onMove - 1].actionPoints++;
             return;
         }
 
         board [index (column, row)].state = "nothing";
-        actualAlerts--;
 
         players [game.onMove - 1].currentLoad = true;
         players [game.onMove - 1].overlapping = false;
 
         game.currentLoad = players [game.onMove - 1].currentLoad;
+        game.unloadable = true;
     }
 
     else showErrorMessage ("Unidentified player action.");
@@ -658,6 +670,21 @@ function playerAction (column, row)
     }
 
     finishAction ();
+}
+
+function unloadAlert ()
+{
+    var alertX = players [game.onMove - 1].column;
+    var alertY = players [game.onMove - 1].row;
+    var alert = index (alertX, alertY);
+
+    players [game.onMove - 1].currentLoad = false;
+    game.currentLoad = players [game.onMove - 1].currentLoad;
+
+    board [alert].state = "questionMark";
+    board [alert].alert = true;
+
+    revealAlert (alertX, alertY);
 }
 
 function moveDoors (column, row, isLeft)
@@ -742,12 +769,16 @@ function extinguishFire (fireX, fireY)
         {
             board [fire].smokedAlert = false;
             board [fire].state = "questionMark";
+
+            if (players [game.onMove - 1].column === fireX && players [game.onMove - 1].row === fireY) revealAlert (fireX, fireY);
         }
 
         else
         {
             players [game.onMove - 1].overlapping = false;
             board [fire].state = "nothing";
+
+            if (players [game.onMove - 1].currentLoad) game.unloadable = true;
         }
     }
 
@@ -980,7 +1011,10 @@ function addAlert ()
     else
     {
         board [alert].state = "questionMark";
+
         if (real == 1) board [alert].alert = true;
+
+        if (board [alert].player) revealAlert (alertX, alertY);
     }
 }
 
