@@ -110,6 +110,7 @@ Window
             pause_button.button_text = "Resume Game"
             gameboard.enabled = false
         }
+
         else
         {
             timer.start ()
@@ -126,6 +127,7 @@ Window
 
         else showErrorMessage ("Game over. You lose.")
 
+        pause_button.enabled = false
         gameboard.enabled = false
     }
 
