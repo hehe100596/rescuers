@@ -10,6 +10,7 @@
         <file>qml/GameSquare.qml</file>
 		<file>qml/GameWall.qml</file>
 		<file>qml/Player.qml</file>
+		<file>qml/HealthBar.qml</file>
         <file>javascript/theme.js</file>
         <file>javascript/gameboard.js</file>
 		<file>img/background.jpg</file>

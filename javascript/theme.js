@@ -24,6 +24,9 @@ var doors = "Gold";
 var unpassable = "Red";
 var actual_player = "DeepSkyBlue";
 var clickable_state = "Gold";
+var health_bar = "LimeGreen";
+var saved_health = "LightSeaGreen";
+var lost_health = "Crimson";
 
 //--------------------------------------------------------------------------------
 // End of file theme.js

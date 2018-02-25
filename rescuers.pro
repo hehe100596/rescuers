@@ -49,7 +49,8 @@ DISTFILES += \
     qml/GameButton.qml \
     qml/GameSquare.qml \
     qml/GameWall.qml \
-    qml/Player.qml
+    qml/Player.qml \
+	qml/HealthBar.qml
 
 #--------------------------------------------------------------------------------
 # End of file rescuers.pro

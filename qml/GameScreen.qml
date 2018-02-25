@@ -194,7 +194,7 @@ Window
 
         Column
         {
-            spacing: game.height / 40
+            spacing: game.height / 25
 
             Text
             {
@@ -205,31 +205,28 @@ Window
                 text: (game.clock).toLocaleTimeString ()
             }
 
-            Text
+            HealthBar
             {
-                font.bold: true
-                font.pointSize: (game.height + game.width) / 140
-                color: Theme.button
-
-                text: (4 - game.dead) + " allowed deaths"
+                range: 4
+                lost: game.dead > range ? range : game.dead
+                label: (range - lost) + " allowed deaths"
+                fromleft: false
             }
 
-            Text
+            HealthBar
             {
-                font.bold: true
-                font.pointSize: (game.height + game.width) / 140
-                color: Theme.button
-
-                text: (7 - game.saved) + " left to save"
+                range: 24
+                lost: game.damaged > range ? range : game.damaged
+                label: 100 - Math.floor (lost / range * 100) + "% house health"
+                fromleft: false
             }
 
-            Text
+            HealthBar
             {
-                font.bold: true
-                font.pointSize: (game.height + game.width) / 140
-                color: Theme.button
-
-                text: Math.floor (game.damaged / 24 * 100) + "% damage"
+                range: 7
+                lost: game.saved > range ? range : game.saved
+                label: (range - lost) + " people to save"
+                fromleft: true
             }
         }
     }
@@ -279,7 +276,7 @@ Window
                 font.pointSize: (game.height + game.width) / 140
                 color: Theme.button
 
-                text: game.currentLoad ? "carried: " : "carried: 0"
+                text: game.currentLoad ? "Carried: " : "Carried: 0"
 
                 Rectangle
                 {

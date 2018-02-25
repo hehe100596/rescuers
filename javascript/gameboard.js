@@ -678,6 +678,7 @@ function unloadAlert ()
     var alertY = players [game.onMove - 1].row;
     var alert = index (alertX, alertY);
 
+    players [game.onMove - 1].overlapping = true;
     players [game.onMove - 1].currentLoad = false;
     game.currentLoad = players [game.onMove - 1].currentLoad;
 
@@ -775,7 +776,7 @@ function extinguishFire (fireX, fireY)
 
         else
         {
-            players [game.onMove - 1].overlapping = false;
+            if (players [game.onMove - 1].column === fireX && players [game.onMove - 1].row === fireY) players [game.onMove - 1].overlapping = false;
             board [fire].state = "nothing";
 
             if (players [game.onMove - 1].currentLoad) game.unloadable = true;
